@@ -314,6 +314,27 @@
     letter-spacing: .5px;
   }
 
+
+  /* ── Timeline ── */
+  .timeline { position: relative; padding-left: 32px; }
+  .timeline::before {
+    content: ''; position: absolute; left: 9px; top: 0; bottom: 0;
+    width: 2px; background: var(--rule);
+  }
+  .tl-item { position: relative; margin-bottom: 28px; }
+  .tl-dot {
+    position: absolute; left: -32px; top: 4px;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--gold); border: 2px solid var(--paper);
+    box-shadow: 0 0 0 2px var(--gold);
+  }
+  .tl-date {
+    font-size: 12px; font-family: sans-serif; color: var(--gold);
+    letter-spacing: 1px; text-transform: uppercase; margin-bottom: 2px;
+  }
+  .tl-title { font-weight: bold; font-size: 16px; margin-bottom: 4px; }
+  .tl-body { font-size: 15px; color: var(--muted); }
+
   /* ── Source Table ── */
   .source-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; font-family: sans-serif; }
   .source-table th {
@@ -489,7 +510,7 @@
         <div class="parcel-card-sub">84,479 sq ft · Survey 4/16/2025</div>
       </div>
 
-    </div>
+
       <div class="parcel-card loaded">
         <div class="parcel-card-label">County Population</div>
         <div class="parcel-card-value">94,350</div>
