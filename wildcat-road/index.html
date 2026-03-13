@@ -82,8 +82,8 @@
   }
   nav ul {
     display: flex; flex-wrap: nowrap; overflow-x: auto;
-    max-width: 100%; margin: 0; padding: 0; list-style: none;
-    scrollbar-width: none;
+    max-width: 100%; margin: 0 auto; padding: 0; list-style: none;
+    scrollbar-width: none; justify-content: center;
   }
   nav ul::-webkit-scrollbar { display: none; }
   nav li { flex-shrink: 0; }
@@ -698,12 +698,52 @@
     );
   }
 
+  // ── Gesture hint overlay ──
+  function addGestureHint(mapEl) {
+    const hint = document.createElement('div');
+    hint.style.cssText = [
+      'position:absolute','inset:0','z-index:1000',
+      'background:rgba(30,40,57,.55)','display:flex',
+      'align-items:center','justify-content:center',
+      'pointer-events:none','opacity:0',
+      'transition:opacity .25s','border-radius:inherit',
+      'font-family:sans-serif','font-size:14px',
+      'color:#fff','letter-spacing:.5px','text-align:center'
+    ].join(';');
+    hint.innerHTML = '<span style="background:rgba(0,0,0,.5);padding:10px 18px;border-radius:6px;">Use <kbd style="background:#fff;color:#333;padding:2px 6px;border-radius:3px;font-size:12px;">Ctrl</kbd> + scroll to zoom</span>';
+    mapEl.style.position = 'relative';
+    mapEl.appendChild(hint);
+    return hint;
+  }
+
   // ── Helper: init a map with a given default layer key ──
   function initMap(id, defaultKey, lat, lng, zoom) {
     const layers = mkLayers();
     const defaultLayer = layers[defaultKey];
-    const map = L.map(id, { layers: [defaultLayer] }).setView([lat, lng], zoom);
+    const map = L.map(id, {
+      layers: [defaultLayer],
+      scrollWheelZoom: false
+    }).setView([lat, lng], zoom);
     L.control.layers(layers).addTo(map);
+
+    // Ctrl+scroll to zoom
+    const container = map.getContainer();
+    const hint = addGestureHint(container);
+    let hintTimer;
+    container.addEventListener('wheel', function(e) {
+      if (e.ctrlKey) {
+        map.scrollWheelZoom.enable();
+      } else {
+        map.scrollWheelZoom.disable();
+        hint.style.opacity = '1';
+        clearTimeout(hintTimer);
+        hintTimer = setTimeout(function() { hint.style.opacity = '0'; }, 1200);
+      }
+    }, { passive: true });
+    container.addEventListener('mouseleave', function() {
+      map.scrollWheelZoom.disable();
+    });
+
     return map;
   }
 
