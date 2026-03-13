@@ -625,36 +625,44 @@
 <!-- ══════════════ LEAFLET MAP INIT ══════════════ -->
 <script>
 (function() {
-  const LAT  = 38.45042654229263;
-  const LNG  = -82.27287249248235;
+  const LAT = 38.45042654229263;
+  const LNG = -82.27287249248235;
 
-  // ── Tile layers ──
-  const osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-  });
+  // ── Tile layer factory — MUST create fresh instances per map ──
+  function mkOSM() {
+    return L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    });
+  }
+  function mkSat() {
+    return L.tileLayer(
+      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+      { maxZoom: 19, attribution: 'Imagery © Esri, Maxar, Earthstar Geographics' }
+    );
+  }
+  function mkTopo() {
+    return L.tileLayer(
+      'https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}',
+      { maxZoom: 16, attribution: 'USGS National Map' }
+    );
+  }
+  function mkHybrid() {
+    return L.tileLayer(
+      'https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryTopo/MapServer/tile/{z}/{y}/{x}',
+      { maxZoom: 16, attribution: 'USGS National Map Imagery + Topo' }
+    );
+  }
 
-  const satellite = L.tileLayer(
-    'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-    { maxZoom: 19, attribution: 'Imagery © Esri, Maxar, Earthstar Geographics' }
-  );
-
-  const topo = L.tileLayer(
-    'https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}',
-    { maxZoom: 16, attribution: 'USGS National Map' }
-  );
-
-  const hybrid = L.tileLayer(
-    'https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryTopo/MapServer/tile/{z}/{y}/{x}',
-    { maxZoom: 16, attribution: 'USGS National Map Imagery + Topo' }
-  );
-
-  const baseLayers = {
-    'Street (OSM)':   osm,
-    'Satellite':      satellite,
-    'Topographic':    topo,
-    'Hybrid':         hybrid
-  };
+  // ── Helper: build a fresh baseLayers object for each map ──
+  function mkLayers() {
+    return {
+      'Street (OSM)': mkOSM(),
+      'Satellite':    mkSat(),
+      'Topographic':  mkTopo(),
+      'Hybrid':       mkHybrid()
+    };
+  }
 
   // ── Property marker ──
   function propertyMarker() {
@@ -669,64 +677,69 @@
   }
 
   // ── Salt Rock marker ──
-  const saltRockMarker = L.circleMarker([38.3451, -82.2396], {
-    radius: 9, color: '#7c3c1a', fillColor: '#f97316',
-    fillOpacity: 0.85, weight: 3
-  }).bindPopup(
-    '<strong>Salt Rock Petroglyphs</strong><br>' +
-    'Fort Ancient / Algonquian, ~1600 CE<br>' +
-    '<small>Guyandotte River, Cabell County</small>'
-  );
+  function saltRockMarker() {
+    return L.circleMarker([38.3451, -82.2396], {
+      radius: 9, color: '#7c3c1a', fillColor: '#f97316',
+      fillOpacity: 0.85, weight: 3
+    }).bindPopup(
+      '<strong>Salt Rock Petroglyphs</strong><br>' +
+      'Fort Ancient / Algonquian, ~1600 CE<br>' +
+      '<small>Guyandotte River, Cabell County</small>'
+    );
+  }
+
+  // ── Helper: init a map with a given default layer key ──
+  function initMap(id, defaultKey, lat, lng, zoom) {
+    const layers = mkLayers();
+    const defaultLayer = layers[defaultKey];
+    const map = L.map(id, { layers: [defaultLayer] }).setView([lat, lng], zoom);
+    L.control.layers(layers).addTo(map);
+    return map;
+  }
 
   // ─────────────────────────────────────────
-  // Hero Map
+  // Hero Map — satellite z15
   // ─────────────────────────────────────────
-  const heroMap = L.map('hero-map', { layers: [satellite] }).setView([LAT, LNG], 15);
-  L.control.layers(baseLayers).addTo(heroMap);
+  const heroMap = initMap('hero-map', 'Satellite', LAT, LNG, 15);
   propertyMarker().addTo(heroMap).openPopup();
 
   // ─────────────────────────────────────────
-  // Terrain map (§1 — topo default)
+  // Terrain map — topo z13
   // ─────────────────────────────────────────
-  const terrainMap = L.map('map-terrain', { layers: [topo] }).setView([LAT, LNG], 13);
-  L.control.layers(baseLayers).addTo(terrainMap);
+  const terrainMap = initMap('map-terrain', 'Topographic', LAT, LNG, 13);
   propertyMarker().addTo(terrainMap);
 
   // ─────────────────────────────────────────
-  // Indigenous sites map (§2 — satellite, wider zoom)
+  // Indigenous sites map — satellite z11, wider view
   // ─────────────────────────────────────────
-  const indMap = L.map('map-indigenous', { layers: [satellite] }).setView([38.397, -82.256], 11);
-  L.control.layers(baseLayers).addTo(indMap);
+  const indMap = initMap('map-indigenous', 'Satellite', 38.397, -82.256, 11);
   propertyMarker().addTo(indMap);
-  saltRockMarker.addTo(indMap);
+  saltRockMarker().addTo(indMap);
 
   // ─────────────────────────────────────────
-  // Regional context map (§5 — street, wide)
+  // Regional context map — street z11
   // ─────────────────────────────────────────
-  const regMap = L.map('map-regional', { layers: [osm] }).setView([38.43, -82.30], 11);
-  L.control.layers(baseLayers).addTo(regMap);
+  const regMap = initMap('map-regional', 'Street (OSM)', 38.43, -82.30, 11);
   propertyMarker().addTo(regMap);
 
   // ─────────────────────────────────────────
-  // Close-up parcel map (§7)
+  // Close-up parcel map — satellite z17
   // ─────────────────────────────────────────
-  const closeMap = L.map('map-closeup', { layers: [satellite] }).setView([LAT, LNG], 17);
-  L.control.layers(baseLayers).addTo(closeMap);
+  const closeMap = initMap('map-closeup', 'Satellite', LAT, LNG, 17);
   propertyMarker().addTo(closeMap).openPopup();
 
   // ─────────────────────────────────────────
-  // Wide county map (§7)
+  // Wide county map — hybrid z10
   // ─────────────────────────────────────────
-  const wideMap = L.map('map-wide', { layers: [hybrid] }).setView([38.42, -82.27], 10);
-  L.control.layers(baseLayers).addTo(wideMap);
+  const wideMap = initMap('map-wide', 'Hybrid', 38.42, -82.27, 10);
   propertyMarker().addTo(wideMap);
 
-  // Invalidate map sizes after page settles (fixes tile rendering issues)
+  // Invalidate sizes after render to fix grey tile issues
   setTimeout(function() {
     [heroMap, terrainMap, indMap, regMap, closeMap, wideMap].forEach(function(m) {
       m.invalidateSize();
     });
-  }, 300);
+  }, 400);
 
 })();
 </script>
