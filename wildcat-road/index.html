@@ -76,19 +76,28 @@
 
   /* ── Nav ── */
   nav {
-    background: var(--warm); border-bottom: 1px solid var(--rule);
+    background: var(--accent);
     position: sticky; top: 0; z-index: 500;
+    box-shadow: 0 2px 12px rgba(0,0,0,.25);
   }
   nav ul {
-    display: flex; flex-wrap: wrap; gap: 0;
-    max-width: 1080px; margin: 0 auto; padding: 0; list-style: none;
+    display: flex; flex-wrap: nowrap; overflow-x: auto;
+    max-width: 100%; margin: 0; padding: 0; list-style: none;
+    scrollbar-width: none;
   }
+  nav ul::-webkit-scrollbar { display: none; }
+  nav li { flex-shrink: 0; }
   nav li a {
-    display: block; padding: 14px 18px; font-size: 13px; font-family: sans-serif;
-    text-decoration: none; color: var(--muted); letter-spacing: .5px;
-    border-right: 1px solid var(--rule); transition: color .2s, background .2s;
+    display: block; padding: 16px 20px;
+    font-size: 12px; font-family: sans-serif; font-weight: 600;
+    letter-spacing: 1px; text-transform: uppercase;
+    text-decoration: none; color: rgba(255,255,255,.55);
+    border-bottom: 3px solid transparent;
+    transition: color .2s, border-color .2s;
+    white-space: nowrap;
   }
-  nav li a:hover { color: var(--accent); background: rgba(46,64,87,.05); }
+  nav li a:hover { color: #fff; border-bottom-color: rgba(255,255,255,.3); }
+  nav li a.active { color: #fff; border-bottom-color: var(--gold); }
 
   /* ── Layout ── */
   .page { max-width: 860px; margin: 0 auto; padding: 56px 32px; }
@@ -227,18 +236,19 @@
   Interactive map — Wildcat Road property, Cabell County, WV (38.4504°N, 82.2728°W) · Use the layer control (top right) to switch between Street, Satellite, Topo, and Hybrid views
 </div>
 
-<!-- ══════════════ NAV ══════════════ -->
-<nav>
+
+<!-- NAV -->
+<nav id="main-nav">
   <ul>
-    <li><a href="#geology">1. Land & Geology</a></li>
-    <li><a href="#peoples">2. First Peoples</a></li>
-    <li><a href="#settlement">3. Settlement</a></li>
-    <li><a href="#development">4. Development</a></li>
-    <li><a href="#modern">5. Modern Era</a></li>
-    <li><a href="#today">6. Area Today</a></li>
-    <li><a href="#maps">7. Maps</a></li>
-    <li><a href="#timeline">8. Timeline</a></li>
-    <li><a href="#sources">9. Sources</a></li>
+    <li><a href="#geology" data-section="geology">Land &amp; Geology</a></li>
+    <li><a href="#peoples" data-section="peoples">First Peoples</a></li>
+    <li><a href="#settlement" data-section="settlement">Settlement</a></li>
+    <li><a href="#development" data-section="development">Development</a></li>
+    <li><a href="#modern" data-section="modern">Modern Era</a></li>
+    <li><a href="#today" data-section="today">Area Today</a></li>
+    <li><a href="#maps" data-section="maps">Maps</a></li>
+    <li><a href="#timeline" data-section="timeline">Timeline</a></li>
+    <li><a href="#sources" data-section="sources">Sources</a></li>
   </ul>
 </nav>
 
@@ -744,5 +754,41 @@
 })();
 </script>
 
+
+<!-- ══════════════ SCROLL SPY ══════════════ -->
+<script>
+(function() {
+  const sections = ['geology','peoples','settlement','development','modern','today','maps','timeline','sources'];
+  const navLinks = {};
+  sections.forEach(function(id) {
+    const el = document.querySelector('nav a[data-section="' + id + '"]');
+    if (el) navLinks[id] = el;
+  });
+
+  function getActive() {
+    const scrollY = window.scrollY + 80;
+    let active = sections[0];
+    sections.forEach(function(id) {
+      const el = document.getElementById(id);
+      if (el && el.offsetTop <= scrollY) active = id;
+    });
+    return active;
+  }
+
+  function updateNav() {
+    const active = getActive();
+    sections.forEach(function(id) {
+      if (navLinks[id]) navLinks[id].classList.toggle('active', id === active);
+    });
+    // Scroll active link into view within nav
+    if (navLinks[active]) {
+      navLinks[active].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+  }
+
+  window.addEventListener('scroll', updateNav, { passive: true });
+  updateNav();
+})();
+</script>
 </body>
 </html>
