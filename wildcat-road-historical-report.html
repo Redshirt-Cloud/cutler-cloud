@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Historical Property Report — Wildcat Road, Cabell County, WV</title>
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --muted: #5a5a78;
+    --accent: #2e4057;
+    --gold: #b5883a;
+    --paper: #faf7f2;
+    --warm: #f0ebe0;
+    --rule: #d4c9b0;
+    --link: #2e5c7a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.75;
+    font-size: 17px;
+  }
+
+  /* ── Cover ── */
+  .cover {
+    background: var(--accent);
+    color: #fff;
+    padding: 80px 48px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      135deg, transparent, transparent 40px,
+      rgba(255,255,255,.03) 40px, rgba(255,255,255,.03) 41px
+    );
+  }
+  .cover-inner { position: relative; max-width: 860px; margin: 0 auto; }
+  .cover-eyebrow {
+    font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 16px; font-family: sans-serif;
+  }
+  .cover h1 { font-size: 42px; line-height: 1.15; margin-bottom: 12px; }
+  .cover-sub { font-size: 20px; opacity: .75; margin-bottom: 40px; font-style: italic; }
+  .cover-meta {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px; border-top: 1px solid rgba(255,255,255,.2); padding-top: 32px;
+  }
+  .cover-meta-item label {
+    display: block; font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--gold); font-family: sans-serif; margin-bottom: 4px;
+  }
+  .cover-meta-item span { font-size: 15px; }
+
+  /* ── Hero Map ── */
+  #hero-map {
+    width: 100%; height: 480px;
+    border-top: 4px solid var(--gold);
+  }
+  .map-caption {
+    background: #162032; color: rgba(255,255,255,.65);
+    font-size: 12px; padding: 8px 24px; font-family: sans-serif;
+    text-align: center; letter-spacing: .5px;
+  }
+
+  /* ── Nav ── */
+  nav {
+    background: var(--warm); border-bottom: 1px solid var(--rule);
+    position: sticky; top: 0; z-index: 500;
+  }
+  nav ul {
+    display: flex; flex-wrap: wrap; gap: 0;
+    max-width: 1080px; margin: 0 auto; padding: 0; list-style: none;
+  }
+  nav li a {
+    display: block; padding: 14px 18px; font-size: 13px; font-family: sans-serif;
+    text-decoration: none; color: var(--muted); letter-spacing: .5px;
+    border-right: 1px solid var(--rule); transition: color .2s, background .2s;
+  }
+  nav li a:hover { color: var(--accent); background: rgba(46,64,87,.05); }
+
+  /* ── Layout ── */
+  .page { max-width: 860px; margin: 0 auto; padding: 56px 32px; }
+  .section { margin-bottom: 72px; }
+  h2 {
+    font-size: 28px; color: var(--accent); margin-bottom: 6px;
+    padding-bottom: 10px; border-bottom: 2px solid var(--gold);
+    display: flex; align-items: center; gap: 12px;
+  }
+  h2 .sec-num {
+    font-size: 13px; font-family: sans-serif; color: var(--gold);
+    letter-spacing: 2px; text-transform: uppercase; font-weight: normal;
+  }
+  h3 { font-size: 20px; color: var(--accent); margin: 28px 0 10px; }
+  p { margin-bottom: 16px; }
+
+  /* ── Pull Quote ── */
+  blockquote {
+    border-left: 4px solid var(--gold); margin: 28px 0;
+    padding: 16px 24px; background: var(--warm);
+    font-style: italic; color: var(--muted); border-radius: 0 6px 6px 0;
+  }
+
+  /* ── Inline Maps ── */
+  .map-block { margin: 28px 0; border-radius: 10px; overflow: hidden; border: 1px solid var(--rule); box-shadow: 0 2px 12px rgba(0,0,0,.08); }
+  .map-block-header {
+    background: var(--accent); color: #fff;
+    padding: 10px 16px; font-size: 13px; font-family: sans-serif;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .map-block-header strong { font-size: 14px; }
+  .map-block-header span { font-size: 11px; opacity: .7; letter-spacing: .5px; }
+  .leaflet-map { width: 100%; }
+
+  /* Layer switcher styling */
+  .leaflet-control-layers { font-family: sans-serif !important; font-size: 13px !important; }
+
+  /* ── Timeline ── */
+  .timeline { position: relative; padding-left: 32px; }
+  .timeline::before {
+    content: ''; position: absolute; left: 9px; top: 0; bottom: 0;
+    width: 2px; background: var(--rule);
+  }
+  .tl-item { position: relative; margin-bottom: 28px; }
+  .tl-dot {
+    position: absolute; left: -32px; top: 4px;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--gold); border: 2px solid var(--paper);
+    box-shadow: 0 0 0 2px var(--gold);
+  }
+  .tl-date { font-size: 12px; font-family: sans-serif; color: var(--gold); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 2px; }
+  .tl-title { font-weight: bold; font-size: 16px; margin-bottom: 4px; }
+  .tl-body { font-size: 15px; color: var(--muted); }
+
+  /* ── Source Table ── */
+  .source-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; font-family: sans-serif; }
+  .source-table th {
+    background: var(--accent); color: #fff; padding: 10px 14px;
+    text-align: left; font-weight: 600; font-size: 12px; letter-spacing: 1px; text-transform: uppercase;
+  }
+  .source-table td { padding: 10px 14px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  .source-table tr:nth-child(even) td { background: var(--warm); }
+  .source-table a { color: var(--link); }
+
+  /* ── Callout ── */
+  .callout {
+    background: var(--warm); border: 1px solid var(--rule); border-radius: 8px;
+    padding: 20px 24px; margin: 24px 0; font-size: 15px;
+  }
+  .callout strong { color: var(--accent); }
+  .callout.important { border-left: 4px solid var(--gold); }
+
+  /* ── Coords ── */
+  .coords-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--accent); color: #fff; border-radius: 6px;
+    padding: 6px 14px; font-size: 13px; font-family: monospace; margin: 4px 0;
+  }
+
+  /* ── Footer ── */
+  footer {
+    background: var(--accent); color: rgba(255,255,255,.6);
+    padding: 40px 32px; text-align: center; font-size: 13px; font-family: sans-serif;
+  }
+  footer strong { color: #fff; }
+
+  @media (max-width: 600px) {
+    .cover { padding: 48px 24px 40px; }
+    .cover h1 { font-size: 28px; }
+    .page { padding: 40px 20px; }
+    nav li a { padding: 12px 10px; font-size: 11px; }
+    #hero-map { height: 320px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════ COVER ══════════════ -->
+<div class="cover">
+  <div class="cover-inner">
+    <div class="cover-eyebrow">Historical Property Report</div>
+    <h1>Wildcat Road<br>Cabell County, West Virginia</h1>
+    <div class="cover-sub">A place where Appalachian hills, ancient rivers, and family roots converge</div>
+    <div class="cover-meta">
+      <div class="cover-meta-item">
+        <label>Coordinates</label>
+        <span>38.4504°N, 82.2728°W</span>
+      </div>
+      <div class="cover-meta-item">
+        <label>County</label>
+        <span>Cabell County, West Virginia</span>
+      </div>
+      <div class="cover-meta-item">
+        <label>Area</label>
+        <span>~2 acres residential</span>
+      </div>
+      <div class="cover-meta-item">
+        <label>Report Date</label>
+        <span>March 2026</span>
+      </div>
+      <div class="cover-meta-item">
+        <label>Nearest Town</label>
+        <span>Barboursville / Ona, WV</span>
+      </div>
+      <div class="cover-meta-item">
+        <label>Watershed</label>
+        <span>Guyandotte River Basin</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ HERO MAP ══════════════ -->
+<div id="hero-map"></div>
+<div class="map-caption">
+  Interactive map — Wildcat Road property, Cabell County, WV (38.4504°N, 82.2728°W) · Use the layer control (top right) to switch between Street, Satellite, Topo, and Hybrid views
+</div>
+
+<!-- ══════════════ NAV ══════════════ -->
+<nav>
+  <ul>
+    <li><a href="#geology">1. Land & Geology</a></li>
+    <li><a href="#peoples">2. First Peoples</a></li>
+    <li><a href="#settlement">3. Settlement</a></li>
+    <li><a href="#development">4. Development</a></li>
+    <li><a href="#modern">5. Modern Era</a></li>
+    <li><a href="#today">6. Area Today</a></li>
+    <li><a href="#maps">7. Maps</a></li>
+    <li><a href="#timeline">8. Timeline</a></li>
+    <li><a href="#sources">9. Sources</a></li>
+  </ul>
+</nav>
+
+<div class="page">
+
+<!-- ══════════════ SECTION 1: GEOLOGY ══════════════ -->
+<div class="section" id="geology">
+  <h2><span class="sec-num">§1</span> The Land — Geography, Geology & Environment</h2>
+
+  <p>Your Wildcat Road property sits in the dissected hill country of southwestern West Virginia, on the eastern margins of Cabell County. Geologically, this landscape is part of the Appalachian Plateaus physiographic province — not the folded and faulted Ridge and Valley country further east, but a deeply eroded tableland carved by millions of years of stream erosion into the sinuous hollows, ridgelines, and tributary valleys that define Appalachian character here.</p>
+
+  <p>The bedrock beneath your feet is Pennsylvanian-age sedimentary rock — shales, siltstones, sandstones, and thin coal seams — originally deposited on the floor of an ancient tropical sea roughly 300 million years ago. Over geologic time, continental collision, uplift, and erosion shaped these flat-lying strata into today's hills. The underlying sandstone and shale sequence is typical of the Pottsville and Kanawha Groups found throughout this portion of West Virginia.</p>
+
+  <p>The local topography is controlled by these strata: ridges cap the more resistant sandstone beds while valleys follow the weaker shale. The terrain around Wildcat Road is characteristic of this "knobs and hollows" landscape — narrow ridgetops separated by sharp drainages that feed into the Guyandotte River watershed to the south and east.</p>
+
+  <blockquote>"With few exceptions, the consolidated bedrock throughout West Virginia is sedimentary rock initially deposited as soft sediments during the Paleozoic Era, a geologic period that lasted from more than 570 million to about 230–240 million years ago."<br>— WV Encyclopedia, Geology entry</blockquote>
+
+  <h3>Hydrology</h3>
+  <p>The broader watershed context is the Guyandotte River, which flows roughly east-to-west through the county before emptying into the Ohio River near Huntington. Small tributary streams dissect the hills around Wildcat Road, draining into this system. Salt Rock — just a few miles south along Route 10 — sits at the Guyandotte itself, and its name reflects the ancient salt wells once worked there.</p>
+
+  <!-- Terrain map -->
+  <div class="map-block">
+    <div class="map-block-header">
+      <strong>Terrain & Hydrology</strong>
+      <span>Topo layer · zoom to explore streams and ridgelines</span>
+    </div>
+    <div id="map-terrain" class="leaflet-map" style="height:380px;"></div>
+  </div>
+
+  <h3>Soils & Land Character</h3>
+  <p>Soils in the Cabell County hill country typically belong to the Gilpin-Muskingum-Shelocta series — moderately deep, well-drained soils developed from acid shale and sandstone residuum on sloping upland terrain. These soils have historically supported mixed hardwood forest (oak-hickory-maple associations) and limited agricultural use on gentler slopes and hollow bottoms.</p>
+
+  <h3>Environmental Considerations</h3>
+  <div class="callout important">
+    <strong>Radon:</strong> West Virginia is in EPA Radon Zone 2 (moderate potential), with some elevated readings in certain lithologies. Cabell County parcels built on shale-rich terrain should be tested for radon during construction.
+  </div>
+  <div class="callout">
+    <strong>Flooding:</strong> The upland hill location of Wildcat Road places it well above typical flood risk. Ridge-and-hillside properties in this area generally carry low FEMA flood zone designations (Zone X — minimal hazard).
+  </div>
+</div>
+
+<!-- ══════════════ SECTION 2: FIRST PEOPLES ══════════════ -->
+<div class="section" id="peoples">
+  <h2><span class="sec-num">§2</span> First Peoples</h2>
+
+  <p>The land that would become Cabell County was home to Indigenous peoples for thousands of years before European contact. The earliest human presence in West Virginia dates to Paleo-Indian hunters around 11,000 BCE. By the Woodland Period (roughly 1000 BCE – 1000 CE), the <strong>Adena culture</strong> had established a sophisticated presence throughout the Ohio Valley, including what is now Cabell County.</p>
+
+  <p>The Adena were hunters, gatherers, and early agriculturalists who constructed the conical earthen burial mounds that still dot the West Virginia landscape today. They lived in circular pole-and-bark houses and maintained extensive trade networks reaching the Great Lakes (copper), the Appalachian Mountains (mica), and the Gulf Coast (marine shells).</p>
+
+  <h3>The Salt Rock Petroglyphs — A Nearby Sacred Site</h3>
+  <p>One of the most significant archaeological sites in Cabell County lies just a few miles southeast of your property: the <strong>Salt Rock Petroglyphs</strong>, carved on large sandstone boulders along the Guyandotte River. Documented by Smithsonian researchers Squier and Davis in 1846 and published in the landmark 1848 volume <em>Ancient Monuments of the Mississippi Valley</em>, these carvings include a striking six-foot shaman figure wearing a "weeping eye mask" — a motif connected to Algonquian ceremonial traditions — as well as depictions of deer, beaver, fish, and other animals. Stylistic analysis places the carvings at approximately 1600 CE, with Indigenous settlement in the Salt Rock area documented as early as 1000 CE.</p>
+
+  <!-- Indigenous sites map -->
+  <div class="map-block">
+    <div class="map-block-header">
+      <strong>Area Context — Salt Rock & Guyandotte River</strong>
+      <span>Satellite layer · your property (blue) and Salt Rock petroglyphs site (orange)</span>
+    </div>
+    <div id="map-indigenous" class="leaflet-map" style="height:380px;"></div>
+  </div>
+
+  <blockquote>"Fort Ancient Indians occupied villages along the banks of the Guyandotte River between Salt Rock and West Hamlin... The main village was situated where the river makes an elbow bend with burial grounds nearby."<br>— Fort Ancient Indians at Salt Rock, WV: A Personal Account</blockquote>
+
+  <p>These Fort Ancient peoples cultivated corn, beans, and squash in the river bottoms, fished and gathered mussels from the Guyandotte, and produced shell-tempered pottery. Their presence in this landscape was continuous and intimate: they knew every ridge, hollow, creek, and salt lick in the area that now includes your property.</p>
+
+  <h3>Late Woodland & Contact-Era Nations</h3>
+  <p>By the 1700s, the Cabell County area had become shared hunting grounds used by the <strong>Shawnee</strong>, <strong>Mingo</strong>, and <strong>Seneca</strong>. The Shawnee used the forested Appalachian hills as hunting ranges. Both groups allied with the British during the Revolutionary War and continued to resist settler encroachment until the early 1790s.</p>
+</div>
+
+<!-- ══════════════ SECTION 3: SETTLEMENT ══════════════ -->
+<div class="section" id="settlement">
+  <h2><span class="sec-num">§3</span> Settlement & Homesteading (1790s–1860s)</h2>
+
+  <p>European-American settlement of the Cabell County hills came haltingly, slowed by Indigenous resistance and the rugged terrain. Thomas Hannon, who arrived in the early 1790s, is regarded as the county's first permanent English settler. The <strong>Savage Grant of 1772</strong> — a land grant to John Savage and 60 veterans of the French and Indian War — was one of the first formal land conveyances in the region.</p>
+
+  <p><strong>Barboursville</strong>, the nearest incorporated town to your property, was founded in 1813 and served as Cabell County's original county seat. The James River and Kanawha Turnpike — built on the advice of George Washington along an ancient Indian trail — was extended to Barboursville in 1814, connecting the community to the broader Virginia road system and making it a waystation for westward migration.</p>
+
+  <h3>The Rural Hill Communities</h3>
+  <p>While Barboursville grew as a town center, the surrounding hill country — including the area near Wildcat Road — was settled by small farm families who cleared hardwood timber for homesteads, raised livestock on the forested ridges, and grew subsistence crops in the creek bottoms. The <strong>Ona community</strong>, just a few miles from your parcel, was one such rural settlement documented by the WVU Agricultural Extension Division as early as 1925.</p>
+
+  <h3>Civil War Division</h3>
+  <p>Cabell County's residents were sharply divided when Virginia considered secession. The county voted to remain in the Union even as Virginia as a whole voted to leave. The first Civil War engagement in the county — the <strong>Battle of Barboursville on Fortification Hill</strong> in 1861 — saw Union volunteers disperse a local Confederate militia. When West Virginia was admitted to the Union on June 20, 1863, the hill farms of the Wildcat Road area became West Virginia land.</p>
+</div>
+
+<!-- ══════════════ SECTION 4: ECONOMIC DEVELOPMENT ══════════════ -->
+<div class="section" id="development">
+  <h2><span class="sec-num">§4</span> Agricultural & Economic Development (1870s–1950s)</h2>
+
+  <p>The arrival of railroad magnate <strong>Collis P. Huntington</strong> transformed Cabell County. In 1871, Huntington laid out the city bearing his name as the western terminus of the C&O Railroad. This single act drew industry, workers, and capital to the county at unprecedented scale. By the early 1900s, the county's economy included glassmaking, flour milling, furniture manufacturing, and international nickel processing.</p>
+
+  <p>The hill communities around Wildcat Road participated primarily through <strong>timber</strong> and subsistence farming supplemented by cash income from nearby Huntington and Barboursville. Coal seams underlie much of Cabell County, and small drift mines were worked throughout the hills.</p>
+
+  <h3>The Great Flood of 1937</h3>
+  <p>The Ohio River Flood of January 1937 was the worst natural disaster in Cabell County's recorded history. The Ohio crested at over 69 feet in Huntington, inundating the city's lower streets. While the hill communities above the flood line were spared the worst, the economic disruption was county-wide and accelerated the shift of residential development toward higher ground — the ridges and hills like those surrounding Wildcat Road.</p>
+
+  <h3>Radio & Television Firsts</h3>
+  <p>Huntington was the site of West Virginia's <strong>first commercial radio station</strong> (1923, now WRVC) and its <strong>first television station</strong> (WSAZ-TV, 1949) — a city that punched well above its weight in culture and commerce relative to its size.</p>
+</div>
+
+<!-- ══════════════ SECTION 5: MODERN ERA ══════════════ -->
+<div class="section" id="modern">
+  <h2><span class="sec-num">§5</span> Modern Development (1960s–Present)</h2>
+
+  <p>The completion of <strong>Interstate 64</strong> in the 1960s reshaped Cabell County's geography, opening the hill country east of Huntington — including the Barboursville and Ona corridor — to suburban residential development. What had been working farm and timber land began converting to residential use as commuters could reach Huntington or Barboursville in minutes.</p>
+
+  <p><strong>Cabell Midland High School</strong>, located in Ona, was created by the 1994 consolidation of Barboursville High and Milton High Schools — the high school serving the Wildcat Road community. The <strong>Huntington Mall</strong> in Barboursville established that corridor as a major regional retail hub.</p>
+
+  <h3>CSX & Economic Transition</h3>
+  <p>CSX Transportation shut down its Huntington division operations in 2016, ending a major era of railroad employment in the county. The economy has since pivoted toward healthcare (Mountain Health Network), education (Marshall University), and service industries.</p>
+
+  <!-- Regional context map -->
+  <div class="map-block">
+    <div class="map-block-header">
+      <strong>Regional Context — Huntington Metro Area</strong>
+      <span>Street layer · showing I-64, Barboursville, Ona, and your property</span>
+    </div>
+    <div id="map-regional" class="leaflet-map" style="height:380px;"></div>
+  </div>
+
+  <h3>Your Property in Context</h3>
+  <p>The Wildcat Road area represents the "rural suburban" character that defines much of Cabell County's residential landscape: wooded parcels on Appalachian ridges and hollows, accessible by secondary roads, within easy commuting distance of Huntington and Barboursville. Building on family land here is part of a generations-long tradition of Cabell County families claiming a place on these hills.</p>
+</div>
+
+<!-- ══════════════ SECTION 6: TODAY ══════════════ -->
+<div class="section" id="today">
+  <h2><span class="sec-num">§6</span> The Area Today</h2>
+
+  <p>Cabell County in 2026 is home to approximately 94,350 residents. Major employers are the Mountain Health Network, Cabell County Schools, and Marshall University. The median home value in 2020 was $129,000, with a home ownership rate of 63.7%.</p>
+
+  <h3>Ecology & Wildlife</h3>
+  <p>The forested Appalachian hills of Cabell County support white-tailed deer, wild turkey, Eastern box turtle, and a diverse songbird community including wood thrush, scarlet tanager, Kentucky warbler, and ovenbird. The Guyandotte River system supports smallmouth bass and muskellunge. Spring wildflower displays — trillium, bloodroot, jack-in-the-pulpit, wild ginger — are a signature of intact Appalachian forest hollows.</p>
+
+  <h3>Parks & Recreation</h3>
+  <p>Regional recreation resources include <strong>Ritter Park</strong> in Huntington (70 acres), <strong>Barboursville Park</strong> with its 17-acre Lake William, <strong>Kiwanivista Park</strong> along US 60, and the <strong>Greenbottom Wildlife Management Area</strong> along the Ohio River.</p>
+
+  <h3>Community Identity</h3>
+  <p>The communities near Wildcat Road combine a deep Appalachian rural character with suburban convenience. Neighbors tend to be long-established families with generational ties to the land, alongside newer arrivals drawn by affordability and quality of life — forested hills, family land, community rootedness, and a quiet pride in the landscape.</p>
+</div>
+
+<!-- ══════════════ SECTION 7: MAPS ══════════════ -->
+<div class="section" id="maps">
+  <h2><span class="sec-num">§7</span> Maps & Imagery</h2>
+
+  <p>All maps below are interactive. Use the layer control (⊞ top-right of each map) to switch between Street, Satellite, Topographic, and Hybrid views. Click the property marker for coordinates and parcel details.</p>
+
+  <!-- Close-up parcel map -->
+  <h3>Close-up — Property Parcel</h3>
+  <div class="map-block">
+    <div class="map-block-header">
+      <strong>Wildcat Road — Parcel View</strong>
+      <span>~400m radius · all base layers available</span>
+    </div>
+    <div id="map-closeup" class="leaflet-map" style="height:480px;"></div>
+  </div>
+
+  <!-- Wide area map -->
+  <h3>Wide Area — Cabell County Context</h3>
+  <div class="map-block">
+    <div class="map-block-header">
+      <strong>Cabell County — Regional Setting</strong>
+      <span>Ohio River to the north · Guyandotte drainage to the south</span>
+    </div>
+    <div id="map-wide" class="leaflet-map" style="height:420px;"></div>
+  </div>
+
+  <h3>Data Sources for Further Research</h3>
+  <div class="callout" style="font-size: 14px; font-family: sans-serif; line-height: 2;">
+    These government APIs deliver free imagery for any bounding box and are used by the maps above:
+    <ul style="padding-left: 20px; margin-top: 8px;">
+      <li><strong>Street:</strong> OpenStreetMap contributors — tile.openstreetmap.org</li>
+      <li><strong>Satellite:</strong> ESRI World Imagery — services.arcgisonline.com</li>
+      <li><strong>Topo:</strong> USGS National Map — basemap.nationalmap.gov</li>
+      <li><strong>Hybrid:</strong> USGS Imagery+Topo — basemap.nationalmap.gov</li>
+      <li><strong>Historical topos:</strong> USGS TopoView — ngmdb.usgs.gov/topoview</li>
+      <li><strong>Parcel records:</strong> WV Property Viewer — mapwv.gov/parcel</li>
+      <li><strong>Land patents:</strong> BLM GLO Records — glorecords.blm.gov</li>
+      <li><strong>Flood zones:</strong> FEMA MSC — msc.fema.gov</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ══════════════ SECTION 8: TIMELINE ══════════════ -->
+<div class="section" id="timeline">
+  <h2><span class="sec-num">§8</span> Timeline</h2>
+  <div class="timeline">
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-date">~300 Million BCE</div>
+      <div class="tl-title">Bedrock Formed</div>
+      <div class="tl-body">Pennsylvanian-age shales, siltstones, and sandstones deposited on the floor of an ancient shallow sea. This is the rock that underlies Wildcat Road today.</div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-date">~11,000 BCE</div>
+      <div class="tl-title">First Humans</div>
+      <div class="tl-body">Paleo-Indian hunters follow megafauna into what is now West Virginia — the first human presence in this landscape.</div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-date">1000 BCE – 200 CE</div>
+      <div class="tl-title">Adena Culture</div>
+      <div class="tl-body">The Adena people build conical burial mounds throughout the Ohio Valley, including Cabell County. Skilled traders whose copper and mica goods traveled hundreds of miles.</div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-date">~1000 – 1650 CE</div>
+      <div class="tl-title">Fort Ancient Villages at Salt Rock</div>
+      <div class="tl-body">Fort Ancient Indians establish villages along the Guyandotte River miles from present-day Wildcat Road, farming river bottoms and carving petroglyphs on sandstone boulders.</div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-date">~1600 CE</div>
+      <div class="tl-title">Salt Rock Petroglyphs Carved</div>
+      <div class="tl-body">A six-foot shaman figure and companion carvings are pecked into sandstone near the Guyandotte — among the most significant Native American rock art sites in West Virginia.</div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-date">1669</div>
+      <div class="tl-title">La Salle on the Ohio</div>
+      <div class="tl-body">French explorer Robert Cavelier de La Salle is likely the first European to enter present-day Cabell County, sailing the Ohio River.</div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-date">1772</div>
+      <div class="tl-title">Savage Grant</div>
+      <div class="tl-body">One of the first formal land grants in the region is made to John Savage and 60 French and Indian War veterans — the beginning of legal land claims in this territory.</div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-date">1796–1800</div>
+      <div class="tl-title">First Settlers</div>
+      <div class="tl-body">Thomas Hannon and other pioneers establish the first permanent English settlements in Cabell County. Shawnee and Mingo groups are displaced westward.</div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-date">1809</div>
+      <div class="tl-title">Cabell County Formed</div>
+      <div class="tl-body">Virginia General Assembly creates Cabell County from Kanawha County. Land records begin.</div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-date">1813</div>
+      <div class="tl-title">Barboursville Founded</div>
+      <div class="tl-body">Barboursville established as Cabell County's seat — the nearest town to your property and the commercial hub of eastern Cabell County for the next century.</div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-date">1814</div>
+      <div class="tl-title">James River & Kanawha Turnpike Reaches Barboursville</div>
+      <div class="tl-body">Major road (now US 60) extended to Barboursville, connecting the area to the broader Virginia road system and opening the region to migration and trade.</div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-date">1846</div>
+      <div class="tl-title">Smithsonian Documents Salt Rock Petroglyphs</div>
+      <div class="tl-body">Squier and Davis document the Guyandotte River petroglyphs, publishing findings in 1848 in <em>Ancient Monuments of the Mississippi Valley</em>.</div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-date">1861</div>
+      <div class="tl-title">Civil War Comes to Cabell County</div>
+      <div class="tl-body">Battle of Barboursville on Fortification Hill. Union volunteers defeat local Confederate Border Rangers. Guyandotte is later burned.</div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-date">June 20, 1863</div>
+      <div class="tl-title">West Virginia Statehood</div>
+      <div class="tl-body">West Virginia admitted to the Union. Cabell County's hill farms officially become West Virginia land.</div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-date">1871</div>
+      <div class="tl-title">Huntington Founded</div>
+      <div class="tl-body">Collis P. Huntington establishes the city as the C&O Railroad's western terminus. Industry transforms the county.</div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-date">January 1937</div>
+      <div class="tl-title">Great Ohio River Flood</div>
+      <div class="tl-body">Ohio crests at 69 feet in Huntington. Hill communities like Wildcat Road are spared; river communities are devastated. Accelerates residential development on high ground.</div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-date">1960s</div>
+      <div class="tl-title">Interstate 64 Opens</div>
+      <div class="tl-body">I-64 opens the Barboursville-Ona hill corridor to suburban residential development. The era of the modern rural-suburban Appalachian neighborhood begins.</div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-date">1994</div>
+      <div class="tl-title">Cabell Midland High School Opens in Ona</div>
+      <div class="tl-body">Consolidation of Barboursville and Milton high schools creates Cabell Midland — the high school serving the Wildcat Road community.</div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-date">2016</div>
+      <div class="tl-title">CSX Closes Huntington Division</div>
+      <div class="tl-body">End of a major railroad employment era. County economy pivots further toward healthcare and education.</div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-date">Present</div>
+      <div class="tl-title">Your Family Builds on This Land</div>
+      <div class="tl-body">The transfer of approximately two acres on Wildcat Road from the Withrow family to Bryson and Mikalia, and the construction of a new home with Cornerstone Builders, continues the long tradition of families putting down roots in the Cabell County hills.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════ SECTION 9: SOURCES ══════════════ -->
+<div class="section" id="sources">
+  <h2><span class="sec-num">§9</span> Sources & Further Research</h2>
+
+  <table class="source-table">
+    <thead>
+      <tr><th>Source</th><th>Type</th><th>URL</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>WV Encyclopedia — Cabell County</td><td>County History</td><td><a href="https://www.wvencyclopedia.org/entries/757" target="_blank">wvencyclopedia.org ↗</a></td></tr>
+      <tr><td>Wikipedia — Cabell County, WV</td><td>County History</td><td><a href="https://en.wikipedia.org/wiki/Cabell_County,_West_Virginia" target="_blank">wikipedia.org ↗</a></td></tr>
+      <tr><td>Salt Rock Petroglyphs</td><td>Archaeology</td><td><a href="https://wvexplorer.com/attractions/prehistoric/salt-rock-petroglyphs/" target="_blank">wvexplorer.com ↗</a></td></tr>
+      <tr><td>WV Encyclopedia — Petroglyphs</td><td>Archaeology</td><td><a href="https://www.wvencyclopedia.org/entries/1785" target="_blank">wvencyclopedia.org ↗</a></td></tr>
+      <tr><td>WV Encyclopedia — Mound Builders</td><td>Archaeology</td><td><a href="https://www.wvencyclopedia.org/entries/1375" target="_blank">wvencyclopedia.org ↗</a></td></tr>
+      <tr><td>Prehistory of West Virginia</td><td>Archaeology</td><td><a href="https://en.wikipedia.org/wiki/Prehistory_of_West_Virginia" target="_blank">wikipedia.org ↗</a></td></tr>
+      <tr><td>Cabell County History — CabellCounty.org</td><td>County History</td><td><a href="https://www.cabellcounty.org/community/our_history.php" target="_blank">cabellcounty.org ↗</a></td></tr>
+      <tr><td>Cabell County Doors to the Past</td><td>Local History</td><td><a href="https://cabellcountydoorstothepast.com/" target="_blank">cabellcountydoorstothepast.com ↗</a></td></tr>
+      <tr><td>WV Culture — Cabell County NRHP Listings</td><td>Historic Preservation</td><td><a href="https://wvculture.org/agencies/state-historic-preservation-office-shpo/register-of-historical-places/national-register-of-historic-places-nominations/cabell-county/" target="_blank">wvculture.org ↗</a></td></tr>
+      <tr><td>WV Historical Geology</td><td>Geology</td><td><a href="http://www.wvgs.wvnet.edu/www/geology/geolhist.htm" target="_blank">wvgs.wvnet.edu ↗</a></td></tr>
+      <tr><td>WV Archives — Cabell County History Sources</td><td>Bibliography</td><td><a href="https://archive.wvculture.org/history/archives/counties/cabell.html" target="_blank">wvculture.org ↗</a></td></tr>
+      <tr><td>Barboursville — Wikipedia</td><td>Town History</td><td><a href="https://en.wikipedia.org/wiki/Barboursville,_West_Virginia" target="_blank">wikipedia.org ↗</a></td></tr>
+      <tr><td>Cabell County Assessor</td><td>Property Records</td><td><a href="https://www.cabellassessor.com/" target="_blank">cabellassessor.com ↗</a></td></tr>
+      <tr><td>WV Property Viewer (MapWV)</td><td>GIS / Parcel</td><td><a href="https://www.mapwv.gov/parcel/" target="_blank">mapwv.gov ↗</a></td></tr>
+      <tr><td>BLM GLO Records</td><td>Land Patents</td><td><a href="https://glorecords.blm.gov/" target="_blank">glorecords.blm.gov ↗</a></td></tr>
+      <tr><td>FamilySearch — Cabell County Genealogy</td><td>Genealogy</td><td><a href="https://www.familysearch.org/en/wiki/Cabell_County,_West_Virginia_Genealogy" target="_blank">familysearch.org ↗</a></td></tr>
+    </tbody>
+  </table>
+
+  <h3>Key Books on Cabell County History</h3>
+  <ul style="padding-left: 24px; line-height: 2.2; font-size: 15px;">
+    <li>Wallace, George Selden. <em>Cabell County Annals and Families.</em> Richmond: Garrett and Massie, 1935.</li>
+    <li>Wallace, George Selden. <em>Huntington Through Seventy-Five Years.</em> 1947.</li>
+    <li>Miller, Doris C. <em>A Centennial History of Huntington West Virginia, 1870–1971.</em> 1971.</li>
+    <li>Geiger, Joe. <em>Civil War in Cabell County, WV, 1861–1865.</em> 1991.</li>
+    <li>KYOWVA Genealogical Society. <em>Cabell County Heritage, 1809–1996.</em> 1996.</li>
+    <li>Burdette, Frank Lee. <em>History of Ona Community.</em> WVU Extension, 1925.</li>
+  </ul>
+
+  <div style="margin-top: 32px;">
+    <span class="coords-badge">📍 38.45042654229263°N, 82.27287249248235°W</span>
+  </div>
+</div>
+
+</div><!-- /page -->
+
+<footer>
+  <strong>Wildcat Road Historical Property Report</strong> &nbsp;·&nbsp; Cabell County, West Virginia &nbsp;·&nbsp; March 2026<br>
+  <span style="font-size: 11px; margin-top: 8px; display: block;">
+    Maps powered by Leaflet.js · OpenStreetMap contributors · USGS National Map · ESRI World Imagery.
+    Research sourced from WV Encyclopedia, Cabell County historical archives, USGS, and public records.
+    For personal and educational use.
+  </span>
+</footer>
+
+<!-- ══════════════ LEAFLET MAP INIT ══════════════ -->
+<script>
+(function() {
+  const LAT  = 38.45042654229263;
+  const LNG  = -82.27287249248235;
+
+  // ── Tile layers ──
+  const osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  });
+
+  const satellite = L.tileLayer(
+    'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    { maxZoom: 19, attribution: 'Imagery © Esri, Maxar, Earthstar Geographics' }
+  );
+
+  const topo = L.tileLayer(
+    'https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}',
+    { maxZoom: 16, attribution: 'USGS National Map' }
+  );
+
+  const hybrid = L.tileLayer(
+    'https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryTopo/MapServer/tile/{z}/{y}/{x}',
+    { maxZoom: 16, attribution: 'USGS National Map Imagery + Topo' }
+  );
+
+  const baseLayers = {
+    'Street (OSM)':   osm,
+    'Satellite':      satellite,
+    'Topographic':    topo,
+    'Hybrid':         hybrid
+  };
+
+  // ── Property marker ──
+  function propertyMarker() {
+    return L.circleMarker([LAT, LNG], {
+      radius: 10, color: '#2e4057', fillColor: '#3b82f6',
+      fillOpacity: 0.9, weight: 3
+    }).bindPopup(
+      '<strong>Wildcat Road Property</strong><br>' +
+      'Cabell County, WV<br>' +
+      '<small>' + LAT.toFixed(6) + '°N, ' + Math.abs(LNG).toFixed(6) + '°W</small>'
+    );
+  }
+
+  // ── Salt Rock marker ──
+  const saltRockMarker = L.circleMarker([38.3451, -82.2396], {
+    radius: 9, color: '#7c3c1a', fillColor: '#f97316',
+    fillOpacity: 0.85, weight: 3
+  }).bindPopup(
+    '<strong>Salt Rock Petroglyphs</strong><br>' +
+    'Fort Ancient / Algonquian, ~1600 CE<br>' +
+    '<small>Guyandotte River, Cabell County</small>'
+  );
+
+  // ─────────────────────────────────────────
+  // Hero Map
+  // ─────────────────────────────────────────
+  const heroMap = L.map('hero-map', { layers: [satellite] }).setView([LAT, LNG], 15);
+  L.control.layers(baseLayers).addTo(heroMap);
+  propertyMarker().addTo(heroMap).openPopup();
+
+  // ─────────────────────────────────────────
+  // Terrain map (§1 — topo default)
+  // ─────────────────────────────────────────
+  const terrainMap = L.map('map-terrain', { layers: [topo] }).setView([LAT, LNG], 13);
+  L.control.layers(baseLayers).addTo(terrainMap);
+  propertyMarker().addTo(terrainMap);
+
+  // ─────────────────────────────────────────
+  // Indigenous sites map (§2 — satellite, wider zoom)
+  // ─────────────────────────────────────────
+  const indMap = L.map('map-indigenous', { layers: [satellite] }).setView([38.397, -82.256], 11);
+  L.control.layers(baseLayers).addTo(indMap);
+  propertyMarker().addTo(indMap);
+  saltRockMarker.addTo(indMap);
+
+  // ─────────────────────────────────────────
+  // Regional context map (§5 — street, wide)
+  // ─────────────────────────────────────────
+  const regMap = L.map('map-regional', { layers: [osm] }).setView([38.43, -82.30], 11);
+  L.control.layers(baseLayers).addTo(regMap);
+  propertyMarker().addTo(regMap);
+
+  // ─────────────────────────────────────────
+  // Close-up parcel map (§7)
+  // ─────────────────────────────────────────
+  const closeMap = L.map('map-closeup', { layers: [satellite] }).setView([LAT, LNG], 17);
+  L.control.layers(baseLayers).addTo(closeMap);
+  propertyMarker().addTo(closeMap).openPopup();
+
+  // ─────────────────────────────────────────
+  // Wide county map (§7)
+  // ─────────────────────────────────────────
+  const wideMap = L.map('map-wide', { layers: [hybrid] }).setView([38.42, -82.27], 10);
+  L.control.layers(baseLayers).addTo(wideMap);
+  propertyMarker().addTo(wideMap);
+
+  // Invalidate map sizes after page settles (fixes tile rendering issues)
+  setTimeout(function() {
+    [heroMap, terrainMap, indMap, regMap, closeMap, wideMap].forEach(function(m) {
+      m.invalidateSize();
+    });
+  }, 300);
+
+})();
+</script>
+
+</body>
+</html>
