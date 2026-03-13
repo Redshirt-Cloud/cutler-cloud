@@ -1107,8 +1107,8 @@
   // ── Helper: build a fresh baseLayers object for each map ──
   function mkLiDAR() {
     return L.tileLayer(
-      'https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer/tile/{z}/{y}/{x}',
-      { maxZoom: 16, attribution: 'USGS 3DEP LiDAR Hillshade' }
+      'https://server.arcgisonline.com/ArcGIS/rest/services/Elevation/World_Hillshade/MapServer/tile/{z}/{y}/{x}',
+      { maxZoom: 16, attribution: 'ESRI World Hillshade · USGS 3DEP source data' }
     );
   }
   function mkLayers() {
