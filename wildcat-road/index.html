@@ -114,6 +114,171 @@
   h3 { font-size: 20px; color: var(--accent); margin: 28px 0 10px; }
   p { margin-bottom: 16px; }
 
+
+  /* ── Parcel Dashboard ── */
+  #parcel-dashboard {
+    background: linear-gradient(135deg, #1a2a3a 0%, #2e4057 100%);
+    padding: 36px 32px;
+    border-bottom: 3px solid var(--gold);
+  }
+  .parcel-inner { max-width: 860px; margin: 0 auto; }
+  .parcel-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 24px; gap: 16px; flex-wrap: wrap;
+  }
+  .parcel-eyebrow {
+    font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--gold); font-family: sans-serif; margin-bottom: 6px; display: block;
+  }
+  .parcel-status {
+    font-size: 11px; font-family: sans-serif; color: rgba(255,255,255,.4);
+    letter-spacing: 1px; padding-top: 28px;
+  }
+  .parcel-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+  }
+  .parcel-card {
+    background: rgba(255,255,255,.07);
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 8px; padding: 16px 18px;
+    transition: background .2s;
+  }
+  .parcel-card:hover { background: rgba(255,255,255,.11); }
+  .parcel-card-label {
+    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--gold); font-family: sans-serif; margin-bottom: 8px;
+  }
+  .parcel-card-value {
+    font-size: 22px; font-weight: bold; color: #fff;
+    font-family: sans-serif; line-height: 1.2; margin-bottom: 6px;
+  }
+  .parcel-card-sub {
+    font-size: 11px; color: rgba(255,255,255,.4);
+    font-family: sans-serif; letter-spacing: .3px;
+  }
+  .parcel-note {
+    margin-top: 16px; font-size: 11px; font-family: sans-serif;
+    color: rgba(255,255,255,.35); letter-spacing: .3px; line-height: 1.6;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
+  .loading-pulse { animation: pulse 1.4s ease-in-out infinite; display: inline-block; }
+  .parcel-card.loaded { border-color: rgba(181,136,58,.4); }
+  .parcel-card.error { border-color: rgba(255,100,100,.3); }
+  .parcel-card.error .parcel-card-value { font-size: 14px; color: rgba(255,200,200,.7); }
+
+
+  /* ── Survey Section ── */
+  .survey-stats {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px; margin: 24px 0;
+  }
+  .survey-stat {
+    background: var(--accent); border-radius: 8px; padding: 18px 16px;
+    text-align: center;
+  }
+  .survey-stat-val {
+    display: block; font-size: 24px; font-weight: bold;
+    color: #fff; font-family: sans-serif; line-height: 1.1;
+  }
+  .survey-stat-label {
+    display: block; font-size: 11px; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--gold);
+    font-family: sans-serif; margin-top: 6px;
+  }
+  .survey-map-block {
+    border: 1px solid var(--rule); border-radius: 10px;
+    overflow: hidden; margin: 24px 0;
+    box-shadow: 0 2px 12px rgba(0,0,0,.08);
+  }
+  .survey-map-header {
+    background: var(--accent); color: #fff;
+    padding: 12px 18px; font-family: sans-serif;
+    display: flex; justify-content: space-between;
+    align-items: center; gap: 12px; flex-wrap: wrap;
+  }
+  .survey-map-header strong { font-size: 14px; }
+  .survey-map-header span { font-size: 11px; opacity: .65; }
+  .survey-map-body { padding: 20px; background: #fff; }
+  .survey-map-cols {
+    display: grid; grid-template-columns: 240px 1fr; gap: 24px;
+  }
+  .survey-detail-group { margin-bottom: 16px; }
+  .survey-detail-label {
+    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--gold); font-family: sans-serif; margin-bottom: 3px;
+  }
+  .survey-detail-val {
+    font-size: 14px; color: var(--ink); font-family: sans-serif; line-height: 1.5;
+  }
+  .survey-detail-val small { font-size: 11px; color: var(--muted); }
+  .survey-plat-embed { background: var(--warm); border-radius: 6px; padding: 12px; }
+  .survey-plat-label {
+    font-size: 11px; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--muted); font-family: sans-serif; margin-bottom: 8px;
+  }
+  .survey-plat-fallback { display: none; font-size: 13px; font-family: sans-serif; margin-top: 8px; }
+  @media (max-width: 640px) {
+    .survey-map-cols { grid-template-columns: 1fr; }
+  }
+
+
+  /* ── Assessor Card ── */
+  .chain-card-wrap {
+    margin: 24px 0; border-radius: 8px; overflow: hidden;
+    border: 1px solid var(--rule); box-shadow: 0 2px 12px rgba(0,0,0,.1);
+  }
+  .chain-card-img {
+    display: block; width: 100%; height: auto;
+    filter: contrast(1.05) brightness(1.02);
+  }
+  .chain-card-caption {
+    background: var(--warm); border-top: 1px solid var(--rule);
+    font-size: 12px; font-family: sans-serif; color: var(--muted);
+    padding: 8px 14px; letter-spacing: .3px;
+  }
+
+  /* ── Chain of Title Timeline ── */
+  .chain-timeline { position: relative; padding-left: 28px; margin: 24px 0; }
+  .chain-timeline::before {
+    content: ''; position: absolute; left: 7px; top: 8px; bottom: 8px;
+    width: 2px; background: linear-gradient(to bottom, var(--rule), var(--gold));
+  }
+  .chain-item { position: relative; margin-bottom: 28px; }
+  .chain-dot {
+    position: absolute; left: -28px; top: 5px;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--warm); border: 2px solid var(--rule);
+  }
+  .chain-dot-current {
+    background: var(--gold); border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(181,136,58,.25);
+  }
+  .chain-content {
+    background: #fff; border: 1px solid var(--rule);
+    border-radius: 8px; padding: 16px 18px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.05);
+  }
+  .chain-item-current .chain-content {
+    border-color: var(--gold); background: #fffdf5;
+  }
+  .chain-date {
+    font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--gold); font-family: sans-serif; margin-bottom: 4px;
+  }
+  .chain-name {
+    font-size: 17px; font-weight: bold; color: var(--accent); margin-bottom: 4px;
+  }
+  .chain-detail {
+    font-size: 12px; font-family: sans-serif; color: var(--muted);
+    margin-bottom: 8px; letter-spacing: .2px;
+  }
+  .chain-note {
+    font-size: 14px; color: var(--ink); line-height: 1.65;
+    border-top: 1px solid var(--rule); padding-top: 8px; margin-top: 8px;
+  }
+
   /* ── Pull Quote ── */
   blockquote {
     border-left: 4px solid var(--gold); margin: 28px 0;
@@ -240,6 +405,7 @@
 <!-- NAV -->
 <nav id="main-nav">
   <ul>
+    <li><a href="#survey" data-section="survey">The Parcel</a></li>
     <li><a href="#geology" data-section="geology">Land &amp; Geology</a></li>
     <li><a href="#peoples" data-section="peoples">First Peoples</a></li>
     <li><a href="#settlement" data-section="settlement">Settlement</a></li>
@@ -252,9 +418,277 @@
   </ul>
 </nav>
 
+
+<!-- ══════════════ PARCEL DATA DASHBOARD ══════════════ -->
+<div id="parcel-dashboard">
+  <div class="parcel-inner">
+    <div class="parcel-header">
+      <div class="parcel-title">
+        <span class="parcel-eyebrow">Live Parcel Data</span>
+        <h2 style="color:#fff;border:none;padding:0;margin:0;font-size:22px;">Your 2 Acres — By the Numbers</h2>
+      </div>
+      <div class="parcel-status" id="parcel-status">Fetching data…</div>
+    </div>
+    <div class="parcel-grid">
+
+      <div class="parcel-card" id="card-elevation">
+        <div class="parcel-card-label">Elevation</div>
+        <div class="parcel-card-value" id="val-elevation"><span class="loading-pulse">—</span></div>
+        <div class="parcel-card-sub" id="sub-elevation">USGS 3DEP Point Query</div>
+      </div>
+
+      <div class="parcel-card" id="card-soil">
+        <div class="parcel-card-label">Soil Series</div>
+        <div class="parcel-card-value" id="val-soil"><span class="loading-pulse">—</span></div>
+        <div class="parcel-card-sub" id="sub-soil">USDA SSURGO Survey</div>
+      </div>
+
+      <div class="parcel-card" id="card-soilkind">
+        <div class="parcel-card-label">Map Unit Type</div>
+        <div class="parcel-card-value" id="val-soilkind"><span class="loading-pulse">—</span></div>
+        <div class="parcel-card-sub" id="sub-soilkind">USDA SSURGO</div>
+      </div>
+
+      <div class="parcel-card" id="card-flood">
+        <div class="parcel-card-label">Flood Zone</div>
+        <div class="parcel-card-value" id="val-flood"><span class="loading-pulse">—</span></div>
+        <div class="parcel-card-sub" id="sub-flood">FEMA NFHL</div>
+      </div>
+
+      <div class="parcel-card" id="card-coords">
+        <div class="parcel-card-label">Coordinates</div>
+        <div class="parcel-card-value" style="font-size:16px;">38.4504°N</div>
+        <div class="parcel-card-sub">82.2729°W · WGS84</div>
+      </div>
+
+      <div class="parcel-card">
+        <div class="parcel-card-label">Tax Map / Parcel</div>
+        <div class="parcel-card-value" style="font-size:17px;">T.M. 6 — 2</div>
+        <div class="parcel-card-sub">District 1 · Barboursville · Cabell Co.</div>
+      </div>
+
+      <div class="parcel-card">
+        <div class="parcel-card-label">Watershed Position</div>
+        <div class="parcel-card-value" style="font-size:14px;">Dividing Ridge</div>
+        <div class="parcel-card-sub">Merrits Cr. ↔ Little Cabell Cr. tributary</div>
+      </div>
+
+      <div class="parcel-card">
+        <div class="parcel-card-label">Road Frontage</div>
+        <div class="parcel-card-value" style="font-size:16px;">Wildcat Rd</div>
+        <div class="parcel-card-sub">WV 26/3 · + Hall's Hill Rd ROW (abandoned)</div>
+      </div>
+
+      <div class="parcel-card">
+        <div class="parcel-card-label">Survey POB</div>
+        <div class="parcel-card-value" style="font-size:13px;">N 530895<br>E 1603795</div>
+        <div class="parcel-card-sub">WV South Zone 4702 · NAD '83</div>
+      </div>
+
+      <div class="parcel-card" id="card-area">
+        <div class="parcel-card-label">Parcel Area</div>
+        <div class="parcel-card-value">1.94 ac</div>
+        <div class="parcel-card-sub">84,479 sq ft · Survey 4/16/2025</div>
+      </div>
+
+    </div>
+    <div class="parcel-note" id="parcel-note"></div>
+  </div>
+</div>
+
 <div class="page">
 
 <!-- ══════════════ SECTION 1: GEOLOGY ══════════════ -->
+
+<!-- ══════════════ SURVEY SECTION ══════════════ -->
+<div class="section" id="survey">
+  <h2><span class="sec-num">§0</span> The Parcel — Survey & Legal Description</h2>
+
+  <p>On April 16, 2025, licensed West Virginia Professional Surveyor Duane K. Bowers (PS #1995, Sunshot Surveying Services, Red House, WV) completed a <strong>retracement survey</strong> of what is now Tax Map 6, Parcel 2, Barboursville District, Cabell County — the 1.94-acre parcel transferred from Robert M. and Sherri E. Withrow to Bryson R. and Mikalia C. W. Cutler. The survey is recorded as project 2024-61 (Withrow to Cutler) and references Deed Book 1439, Page 484 and Deed Book 588, Page 463 in the Cabell County Clerk's Office.</p>
+
+  <div class="survey-stats">
+    <div class="survey-stat">
+      <span class="survey-stat-val">1.94</span>
+      <span class="survey-stat-label">Acres</span>
+    </div>
+    <div class="survey-stat">
+      <span class="survey-stat-val">84,479</span>
+      <span class="survey-stat-label">Square Feet</span>
+    </div>
+    <div class="survey-stat">
+      <span class="survey-stat-val">T.M. 6–2</span>
+      <span class="survey-stat-label">Tax Map / Parcel</span>
+    </div>
+    <div class="survey-stat">
+      <span class="survey-stat-val">Apr 16, 2025</span>
+      <span class="survey-stat-label">Survey Date</span>
+    </div>
+  </div>
+
+  <h3>What a Retracement Survey Means</h3>
+  <p>A retracement survey — as opposed to a new boundary survey — follows and confirms existing deed calls and physical evidence already in the record. Bowers traced the prior deed descriptions and found the historic boundary markers: old fence lines, a 12×12-inch stone set on the ridge, a stone pile, old locust fence posts, and a rotten chestnut oak snag still visible at one corner call. New 5/8-inch rebar monuments with plastic caps (labeled "SUNSHOT WVPS 1995") were set at each corner to establish durable, legally defensible markers going forward.</p>
+
+  <h3>Location & Topographic Character</h3>
+  <p>The survey plat carries the precise description: <em>"Situate on a dividing ridge between Merrits Creek and a tributary to Little Cabell Creek, Barboursville District, Cabell County, West Virginia."</em> This single phrase captures the fundamental character of the land. The parcel occupies the spine of a narrow Appalachian ridge — one of the countless finger ridges that radiate outward from the county's hill country. Rainwater falling on the western slope drains toward Merrits Creek; water on the eastern slope feeds a tributary of Little Cabell Creek. You own both sides of that watershed divide.</p>
+
+  <p>The parcel's elongated, irregular shape — roughly 425 feet along its longest axis running north-northwest — reflects the geometry of the ridge itself. The road frontage along Wildcat Road (WV 26/3) anchors the southern end. The parcel narrows and follows the ridge northward, bounded on the west by the McCallister property (T.M. 5, Parcel 120, formerly part of the Houchins Estate) and on the northeast by the remaining Withrow land (T.M. 6, Parcel 19.3).</p>
+
+  <h3>Hall's Hill Road — The Abandoned Ridge Road</h3>
+  <p>One of the more historically evocative features of the survey is the abandoned section of <strong>Hall's Hill Road</strong> — also referred to in older deeds as the Ridge Road — which crosses the property as a 30-foot right of way. The survey notes that its existence and alignment were "purported by an adjoining landowner." This road's presence on the ridge pre-dates the current property configuration and likely served as the primary access route for the hill community long before Wildcat Road was improved. The survey makes the parcel subject to this right of way, and its physical trace — likely visible as a worn path or depression along the ridge — is part of the land's layered history.</p>
+
+  <h3>Adjacent Landowners</h3>
+  <p>The parcel shares boundaries with three neighbors. To the north and northwest, <strong>Donald L. and Linda L. Rose</strong> (T.M. 6, Parcel 1; D.B. 1167, Page 448) hold land recorded in Map Book 13, Page 111. To the west and southwest, <strong>Paul and Donna L. McCallister</strong> (T.M. 5, Parcel 120; D.B. 908, Page 279) hold what was originally Part of Lot 4 of the Houchins Estate — a subdivision name that hints at an earlier generation of organized land development in this hollow. To the east, the remaining Withrow family land (T.M. 6, Parcel 19.3) continues.</p>
+
+  <h3>Survey Map</h3>
+  <div class="survey-map-block">
+    <div class="survey-map-header">
+      <strong>Plat of Survey — Bryson R. &amp; Mikalia C. W. Cutler</strong>
+      <span>Duane K. Bowers PS 1995 · April 16, 2025 · Scale 1″ = 50′</span>
+    </div>
+    <div class="survey-map-body">
+      <div class="survey-map-cols">
+        <div class="survey-map-left">
+          <div class="survey-detail-group">
+            <div class="survey-detail-label">Parcel</div>
+            <div class="survey-detail-val">T.M. 6, Parcel 2 — Barboursville District</div>
+          </div>
+          <div class="survey-detail-group">
+            <div class="survey-detail-label">Area</div>
+            <div class="survey-detail-val">1.94 acres · 84,479 sq ft</div>
+          </div>
+          <div class="survey-detail-group">
+            <div class="survey-detail-label">Point of Beginning</div>
+            <div class="survey-detail-val">N 530895.41 · E 1603795.25<br><small>WV South Zone 4702 · NAD '83</small></div>
+          </div>
+          <div class="survey-detail-group">
+            <div class="survey-detail-label">Quadrangle</div>
+            <div class="survey-detail-val">Barboursville, WV</div>
+          </div>
+          <div class="survey-detail-group">
+            <div class="survey-detail-label">Deed References</div>
+            <div class="survey-detail-val">D.B. 1439 Pg 484<br>D.B. 588 Pg 463<br>Prior: D.B. 953 Pg 12 (Withrow)</div>
+          </div>
+          <div class="survey-detail-group">
+            <div class="survey-detail-label">Surveyor</div>
+            <div class="survey-detail-val">Duane K. Bowers PS #1995<br>Sunshot Surveying Services<br>15120 Charleston Rd, Red House WV</div>
+          </div>
+          <div class="survey-detail-group">
+            <div class="survey-detail-label">Corners</div>
+            <div class="survey-detail-val">5/8″ rebar × 30″ with cap<br>"SUNSHOT WVPS 1995"</div>
+          </div>
+          <div class="survey-detail-group">
+            <div class="survey-detail-label">North Reference</div>
+            <div class="survey-detail-val">Grid North · State Plane<br>WV South Zone 4702</div>
+          </div>
+        </div>
+        <div class="survey-map-right">
+          <div class="survey-plat-embed">
+            <div class="survey-plat-label">Full Survey Plat</div>
+            <embed src="survey.pdf" type="application/pdf" width="100%" height="520px" style="border-radius:4px;"/>
+            <div class="survey-plat-fallback">
+              <p>PDF viewer not available in this browser. <a href="survey.pdf" target="_blank">Download survey plat PDF ↗</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout important" style="margin-top:24px;">
+    <strong>Survey notes caution:</strong> This survey does not reflect easements, rights of way (other than those shown), building setback lines, restrictive covenants, subdivision restrictions, or land-use restrictions that may be of record in the Cabell County Clerk's Office. The parcel is subject to the Wildcat Road right of way and the abandoned Hall's Hill Road right of way.
+  </div>
+
+  <h3>Chain of Title — Assessor Map Card</h3>
+  <p>The Cabell County Assessor's Office maintains a physical map card for Tax Map 6, Parcel 2 — a handwritten record that traces every ownership transfer since at least 1948. This document, labeled "W. S. of Sec. Rd. 26-3" (West Side of Secondary Road 26-3, which is Wildcat Road), is a window into seven decades of people who held this ridge before it came to you.</p>
+
+  <div class="chain-card-wrap">
+    <img src="assessor-mapcard.jpeg" alt="Cabell County Assessor Map Card — Tax Map 6, Parcel 2" class="chain-card-img"/>
+    <div class="chain-card-caption">Cabell County Assessor Map Card · Map 6, Parcel 2 · Barboursville District · West Side of Secondary Road 26-3 (Wildcat Road)</div>
+  </div>
+
+  <h3>The People Who Held This Land</h3>
+  <p>Reading the card from oldest to most recent, the parcel passes through six hands before reaching yours:</p>
+
+  <div class="chain-timeline">
+
+    <div class="chain-item">
+      <div class="chain-dot"></div>
+      <div class="chain-content">
+        <div class="chain-date">January 16, 1948</div>
+        <div class="chain-name">Raymond Warden</div>
+        <div class="chain-detail">Address: Rt. 2, Huntington, W.Va. · D.B. 392, Pg. 267 · Fed. Tax Stamps: $2,000</div>
+        <div class="chain-note">The earliest recorded entry. Raymond Warden, living on Rural Route 2 out of Huntington, acquired this ridge parcel in the immediate postwar years. The $2,000 tax stamp value reflects a modest mid-century rural land transaction.</div>
+      </div>
+    </div>
+
+    <div class="chain-item">
+      <div class="chain-dot"></div>
+      <div class="chain-content">
+        <div class="chain-date">1961</div>
+        <div class="chain-name">Doyle Lee & Anita Workman</div>
+        <div class="chain-detail">D.B. 588, Pg. 463 · Fed. Tax Stamps: $0.55</div>
+        <div class="chain-note">The Workman family enters the picture. The minimal tax stamp ($0.55) suggests this may have been a family transfer or a nominal-consideration conveyance. D.B. 588, Page 463 is also cited in the 2025 retracement survey as an additional reference deed — meaning the surveyors traced back to this very transaction.</div>
+      </div>
+    </div>
+
+    <div class="chain-item">
+      <div class="chain-dot"></div>
+      <div class="chain-content">
+        <div class="chain-date">September 13, 1973</div>
+        <div class="chain-name">Garland L. & Doris L. Workman</div>
+        <div class="chain-detail">D.B. 730, Pg. 236 · Fed. Tax Stamps: $100</div>
+        <div class="chain-note">The land passes to Garland L. Workman and his wife Doris L. Workman. At $100 in tax stamps this was a more substantial transfer than the 1961 entry. The Workman family would hold this ridge for the next four decades.</div>
+      </div>
+    </div>
+
+    <div class="chain-item">
+      <div class="chain-dot"></div>
+      <div class="chain-content">
+        <div class="chain-date">December 13, 2001 (approx.)</div>
+        <div class="chain-name">Garland L. Workman</div>
+        <div class="chain-detail">D.B. 1087, Pg. 516</div>
+        <div class="chain-note">Title moves to Garland L. Workman alone — likely following the death or transfer of Doris's interest. The same deed book and page appears in the subsequent estate entry, suggesting this was an intermediate title consolidation.</div>
+      </div>
+    </div>
+
+    <div class="chain-item">
+      <div class="chain-dot"></div>
+      <div class="chain-content">
+        <div class="chain-date">Deceased November 12, 2018</div>
+        <div class="chain-name">Estate of Garland L. Workman → Barbara Fields</div>
+        <div class="chain-detail">D.B. 1087, Pg. 510 · Distributed to: Barbara Fields (Wayne, WV)</div>
+        <div class="chain-note">Garland L. Workman died November 12, 2018. The parcel passed through his estate to Barbara Fields of Wayne, West Virginia — likely a family member or heir. This estate distribution closed out the Workman era on this ridge after nearly 60 years of family ownership.</div>
+      </div>
+    </div>
+
+    <div class="chain-item">
+      <div class="chain-dot"></div>
+      <div class="chain-content">
+        <div class="chain-date">March 4, 2021</div>
+        <div class="chain-name">Robert M. & Sherri E. Withrow</div>
+        <div class="chain-detail">D.B. 1439, Pg. 484 · Fed. Tax Stamps: $5,000 · Survey noted</div>
+        <div class="chain-note">The Withrows acquire the parcel from the Workman estate — the transfer that directly precedes yours. The $5,000 tax stamp reflects a meaningful purchase. This is the deed that the 2025 retracement survey was commissioned against, establishing the boundaries that define your parcel today.</div>
+      </div>
+    </div>
+
+    <div class="chain-item chain-item-current">
+      <div class="chain-dot chain-dot-current"></div>
+      <div class="chain-content">
+        <div class="chain-date">2025</div>
+        <div class="chain-name">Bryson R. & Mikalia C. W. Cutler</div>
+        <div class="chain-detail">Family transfer from Robert M. & Sherri E. Withrow · Survey by Duane K. Bowers PS 1995 · April 16, 2025</div>
+        <div class="chain-note">The land comes home. A family transfer from Mikalia's parents — the Withrows — to Bryson and Mikalia as tenants by the entirety. The retracement survey, new rebar monuments, and this report mark the beginning of the Cutler chapter on this Cabell County ridge.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="callout" style="margin-top:24px; font-size:14px;">
+    <strong>Summary:</strong> From Raymond Warden's postwar acquisition in 1948 through the Workman family's six-decade stewardship, to the Withrow purchase in 2021 — this ridge has passed through just six owners in 77 years before reaching you. The full deed chain can be traced at the Cabell County Clerk's Office: D.B. 392/267 → D.B. 588/463 → D.B. 730/236 → D.B. 1087/516 → D.B. 1439/484.
+  </div>
+
+</div>
+
 <div class="section" id="geology">
   <h2><span class="sec-num">§1</span> The Land — Geography, Geology & Environment</h2>
 
@@ -665,12 +1099,19 @@
   }
 
   // ── Helper: build a fresh baseLayers object for each map ──
+  function mkLiDAR() {
+    return L.tileLayer(
+      'https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer/tile/{z}/{y}/{x}',
+      { maxZoom: 16, attribution: 'USGS 3DEP LiDAR Hillshade' }
+    );
+  }
   function mkLayers() {
     return {
       'Street (OSM)': mkOSM(),
       'Satellite':    mkSat(),
       'Topographic':  mkTopo(),
-      'Hybrid':       mkHybrid()
+      'Hybrid':       mkHybrid(),
+      'LiDAR Terrain': mkLiDAR()
     };
   }
 
@@ -798,7 +1239,7 @@
 <!-- ══════════════ SCROLL SPY ══════════════ -->
 <script>
 (function() {
-  const sections = ['geology','peoples','settlement','development','modern','today','maps','timeline','sources'];
+  const sections = ['survey','geology','peoples','settlement','development','modern','today','maps','timeline','sources'];
   const navLinks = {};
   sections.forEach(function(id) {
     const el = document.querySelector('nav a[data-section="' + id + '"]');
@@ -830,5 +1271,114 @@
   updateNav();
 })();
 </script>
+
+<!-- ══════════════ PARCEL DATA FETCH ══════════════ -->
+<script>
+(function() {
+  const LAT = 38.45042654229263;
+  const LNG = -82.27287249248235;
+
+  function setCard(id, value, sub, state) {
+    const card = document.getElementById('card-' + id);
+    const val  = document.getElementById('val-' + id);
+    const s    = document.getElementById('sub-' + id);
+    if (val) val.innerHTML = value;
+    if (s && sub) s.textContent = sub;
+    if (card) {
+      card.classList.remove('loaded', 'error');
+      card.classList.add(state || 'loaded');
+    }
+  }
+
+  function setStatus(msg) {
+    const el = document.getElementById('parcel-status');
+    if (el) el.textContent = msg;
+  }
+
+  function appendNote(msg) {
+    const el = document.getElementById('parcel-note');
+    if (el) el.textContent += (el.textContent ? ' · ' : '') + msg;
+  }
+
+  // ── 1. Elevation via USGS EPQS ──
+  fetch('https://epqs.nationalmap.gov/v1/json?x=' + LNG + '&y=' + LAT + '&units=Feet&wkid=4326&includeDate=false')
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      const ft = Math.round(d.value);
+      const m  = Math.round(ft * 0.3048);
+      setCard('elevation', ft + ' ft', 'USGS 3DEP · ' + m + ' m above sea level', 'loaded');
+      setStatus('Elevation loaded…');
+    })
+    .catch(function(e) {
+      setCard('elevation', 'Unavailable', 'USGS EPQS timeout', 'error');
+      appendNote('Elevation API unreachable from this browser');
+    });
+
+  // ── 2. Soil via USDA SDA ──
+  const soilQuery = "SELECT mu.muname, mu.mukind, c.compname, c.comppct_r FROM mapunit mu " +
+    "INNER JOIN component c ON mu.mukey = c.mukey " +
+    "WHERE mu.mukey IN (SELECT * FROM SDA_Get_Mukey_from_intersection_with_WktWgs84(" +
+    "'point(" + LNG + " " + LAT + ")')) AND c.majcompflag = 'Yes'";
+
+  fetch('https://SDMDataAccess.sc.egov.usda.gov/Tabular/post.rest', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: 'query=' + encodeURIComponent(soilQuery) + '&format=json'
+  })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      const rows = d.Table;
+      if (rows && rows.length > 0) {
+        const row = rows[0];
+        const compname = row[2] || 'Unknown';
+        const muname   = row[0] || '';
+        const mukind   = row[1] || '';
+        const pct      = row[3] || '';
+        setCard('soil', compname, muname, 'loaded');
+        setCard('soilkind', mukind || 'N/A', pct + '% dominant component', 'loaded');
+        setStatus('Soil + elevation loaded…');
+      } else {
+        setCard('soil', 'No data', 'No SSURGO coverage returned', 'error');
+        setCard('soilkind', 'No data', '', 'error');
+      }
+    })
+    .catch(function(e) {
+      setCard('soil', 'Unavailable', 'USDA SDA timeout', 'error');
+      setCard('soilkind', 'Unavailable', '', 'error');
+      appendNote('Soil API unreachable from this browser');
+    });
+
+  // ── 3. Flood Zone via FEMA NFHL ──
+  const femaUrl = 'https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer/28/query' +
+    '?geometry=' + LNG + ',' + LAT +
+    '&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelIntersects' +
+    '&outFields=FLD_ZONE,ZONE_SUBTY&f=json';
+
+  fetch(femaUrl)
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.features && d.features.length > 0) {
+        const attr = d.features[0].attributes;
+        const zone = attr.FLD_ZONE || 'Unknown';
+        const sub  = attr.ZONE_SUBTY || '';
+        let label = zone;
+        let note  = '';
+        if (zone === 'X') { label = 'Zone X'; note = 'Minimal flood hazard'; }
+        else if (zone === 'AE') { label = 'Zone AE'; note = '1% annual flood risk'; }
+        else if (zone === 'A') { label = 'Zone A'; note = 'Flood hazard area'; }
+        setCard('flood', label, note || sub || 'FEMA NFHL Layer 28', 'loaded');
+      } else {
+        setCard('flood', 'Zone X', 'Minimal flood hazard (no special zone)', 'loaded');
+      }
+      setStatus('All data loaded ✓');
+    })
+    .catch(function(e) {
+      setCard('flood', 'Unavailable', 'FEMA API timeout', 'error');
+      appendNote('FEMA API unreachable from this browser');
+    });
+
+})();
+</script>
+
 </body>
 </html>
