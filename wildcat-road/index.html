@@ -28,6 +28,7 @@
     color: var(--ink);
     line-height: 1.75;
     font-size: 17px;
+    overflow-x: hidden;
   }
 
   /* ── Cover ── */
@@ -67,6 +68,7 @@
   #hero-map {
     width: 100%; height: 480px;
     border-top: 4px solid var(--gold);
+    touch-action: pan-y;
   }
   .map-caption {
     background: #162032; color: rgba(255,255,255,.65);
@@ -249,7 +251,7 @@
   }
 
   /* ── Chain of Title Timeline ── */
-  .chain-timeline { position: relative; padding-left: 28px; margin: 24px 0; }
+  .chain-timeline { position: relative; padding-left: 28px; margin: 24px 0; overflow-x: hidden; }
   .chain-timeline::before {
     content: ''; position: absolute; left: 7px; top: 8px; bottom: 8px;
     width: 2px; background: linear-gradient(to bottom, var(--rule), var(--gold));
@@ -316,7 +318,7 @@
 
 
   /* ── Timeline ── */
-  .timeline { position: relative; padding-left: 32px; }
+  .timeline { position: relative; padding-left: 32px; overflow-x: hidden; }
   .timeline::before {
     content: ''; position: absolute; left: 9px; top: 0; bottom: 0;
     width: 2px; background: var(--rule);
@@ -1320,8 +1322,10 @@
   // ─────────────────────────────────────────
   // Hero Map — satellite z15
   // ─────────────────────────────────────────
+  // Prevent maps from stealing page scroll position on mobile
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
   const heroMap = initMap('hero-map', 'Satellite', LAT, LNG, 15);
-  propertyMarker().addTo(heroMap).openPopup();
+  propertyMarker().addTo(heroMap);
 
   // ─────────────────────────────────────────
   // Terrain map — topo z13
@@ -1346,13 +1350,18 @@
   // Close-up parcel map — satellite z17
   // ─────────────────────────────────────────
   const closeMap = initMap('map-closeup', 'Satellite', LAT, LNG, 17);
-  propertyMarker().addTo(closeMap).openPopup();
+  propertyMarker().addTo(closeMap);
 
   // ─────────────────────────────────────────
   // Wide county map — hybrid z10
   // ─────────────────────────────────────────
   const wideMap = initMap('map-wide', 'Hybrid', 38.42, -82.27, 10);
   propertyMarker().addTo(wideMap);
+
+  // Force scroll to top on load (prevents map focus hijack on mobile)
+  window.addEventListener('load', function() {
+    setTimeout(function() { window.scrollTo(0, 0); }, 50);
+  });
 
   // Invalidate sizes after render to fix grey tile issues
   setTimeout(function() {
