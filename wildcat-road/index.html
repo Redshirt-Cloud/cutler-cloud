@@ -144,6 +144,7 @@
     border: 1px solid rgba(255,255,255,.12);
     border-radius: 8px; padding: 16px 18px;
     transition: background .2s;
+    min-height: 90px;
   }
   .parcel-card:hover { background: rgba(255,255,255,.11); }
   .parcel-card-label {
@@ -153,6 +154,7 @@
   .parcel-card-value {
     font-size: 22px; font-weight: bold; color: #fff;
     font-family: sans-serif; line-height: 1.2; margin-bottom: 6px;
+    min-height: 28px;
   }
   .parcel-card-sub {
     font-size: 11px; color: rgba(255,255,255,.4);
@@ -431,7 +433,7 @@
 </div>
 
 <!-- ══════════════ HERO MAP ══════════════ -->
-<div id="hero-map"></div>
+<div id="hero-map" style="height:480px;"></div>
 <div class="map-caption">
   Interactive map — Wildcat Road property, Cabell County, WV (38.4504°N, 82.2728°W) · Use the layer control (top right) to switch between Street, Satellite, Topo, and Hybrid views
 </div>
@@ -463,7 +465,7 @@
         <span class="parcel-eyebrow">Live Parcel Data</span>
         <h2 style="color:#fff;border:none;padding:0;margin:0;font-size:22px;">Your 2 Acres — By the Numbers</h2>
       </div>
-      <div class="parcel-status" id="parcel-status">Fetching data…</div>
+      <div class="parcel-status" id="parcel-status" style="min-width:160px;text-align:right;">Fetching data…</div>
     </div>
     <div class="parcel-grid">
 
