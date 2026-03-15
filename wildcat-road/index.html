@@ -6,9 +6,9 @@
 <title>Historical Property Report — Wildcat Road, Cabell County, WV</title>
 
 <!-- Leaflet CSS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
 <!-- Leaflet JS -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 
 <style>
   :root {
@@ -393,6 +393,40 @@
     font-size: 11px; color: rgba(255,255,255,.35);
     font-family: sans-serif; margin-top: 6px; pointer-events: none;
   }
+
+  /* ── Static Map Viewer ── */
+  .static-map-wrap {
+    margin: 28px 0; border-radius: 10px; overflow: hidden;
+    border: 1px solid var(--rule); box-shadow: 0 2px 12px rgba(0,0,0,.08);
+  }
+  .static-map-header {
+    background: var(--accent); color: #fff;
+    padding: 10px 16px; font-family: sans-serif;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 8px;
+  }
+  .static-map-header strong { font-size: 14px; }
+  .static-map-layers { display: flex; gap: 6px; flex-wrap: wrap; }
+  .layer-btn {
+    padding: 4px 12px; border-radius: 20px;
+    border: 1px solid rgba(255,255,255,.3);
+    background: transparent; color: rgba(255,255,255,.7);
+    font-size: 11px; font-family: sans-serif; cursor: pointer;
+    letter-spacing: .5px; transition: all .15s;
+  }
+  .layer-btn:hover { background: rgba(255,255,255,.1); color: #fff; }
+  .layer-btn.active { background: var(--gold); border-color: var(--gold); color: #fff; }
+  .static-map-img-wrap { line-height: 0; }
+  .static-map-img {
+    display: none; width: 100%; height: auto;
+    max-height: 460px; object-fit: cover; object-position: center;
+  }
+  .static-map-img.visible { display: block; }
+  .static-map-caption {
+    background: var(--warm); border-top: 1px solid var(--rule);
+    font-size: 11px; font-family: sans-serif; color: var(--muted);
+    padding: 6px 14px; letter-spacing: .3px; line-height: 1.4;
+  }
 </style>
 </head>
 <body>
@@ -433,10 +467,8 @@
 </div>
 
 <!-- ══════════════ HERO MAP ══════════════ -->
-<div id="hero-map" style="height:480px;"></div>
-<div class="map-caption">
-  Interactive map — Wildcat Road property, Cabell County, WV (38.4504°N, 82.2728°W) · Use the layer control (top right) to switch between Street, Satellite, Topo, and Hybrid views
-</div>
+<div class="static-map-wrap" id="smw-hero"><div class="static-map-header"><strong>Property Location</strong><div class="static-map-layers"><button class="layer-btn active" onclick="swLayer('hero','satellite')">Satellite</button><button class="layer-btn" onclick="swLayer('hero','topo')">Topographic</button><button class="layer-btn" onclick="swLayer('hero','street')">Street</button></div></div><div class="static-map-img-wrap"><img id="smi-hero-satellite" src="map-images/map-hero-satellite.jpg" alt="Property Location — Satellite" class="static-map-img visible" loading="lazy"/><img id="smi-hero-topo" src="map-images/map-hero-topo.jpg" alt="Property Location — Topographic" class="static-map-img" loading="lazy"/><img id="smi-hero-street" src="map-images/map-hero-street.jpg" alt="Property Location — Street" class="static-map-img" loading="lazy"/></div><div class="static-map-caption">Wildcat Road · Cabell County WV · 38.4504°N 82.2728°W</div></div>
+
 
 
 <!-- NAV -->
@@ -769,7 +801,7 @@
       <strong>Terrain & Hydrology</strong>
       <span>Topo layer · zoom to explore streams and ridgelines</span>
     </div>
-    <div id="map-terrain" class="leaflet-map" style="height:380px;"></div>
+    <div class="static-map-wrap" id="smw-terrain"><div class="static-map-header"><strong>Terrain & Hydrology</strong><div class="static-map-layers"><button class="layer-btn active" onclick="swLayer('terrain','topo')">Topographic</button><button class="layer-btn" onclick="swLayer('terrain','lidar')">LiDAR Terrain</button><button class="layer-btn" onclick="swLayer('terrain','satellite')">Satellite</button></div></div><div class="static-map-img-wrap"><img id="smi-terrain-topo" src="map-images/map-terrain-topo.jpg" alt="Terrain & Hydrology — Topographic" class="static-map-img visible" loading="lazy"/><img id="smi-terrain-lidar" src="map-images/map-terrain-lidar.jpg" alt="Terrain & Hydrology — LiDAR Terrain" class="static-map-img" loading="lazy"/><img id="smi-terrain-satellite" src="map-images/map-terrain-satellite.jpg" alt="Terrain & Hydrology — Satellite" class="static-map-img" loading="lazy"/></div><div class="static-map-caption">Ridge and valley topography · Guyandotte watershed · LiDAR shows bare-earth ground surface</div></div>
   </div>
 
   <h3>Soils & Land Character</h3>
@@ -801,7 +833,7 @@
       <strong>Area Context — Salt Rock & Guyandotte River</strong>
       <span>Satellite layer · your property (blue) and Salt Rock petroglyphs site (orange)</span>
     </div>
-    <div id="map-indigenous" class="leaflet-map" style="height:380px;"></div>
+    <div class="static-map-wrap" id="smw-indigenous"><div class="static-map-header"><strong>Area Context — Salt Rock & Guyandotte River</strong><div class="static-map-layers"><button class="layer-btn active" onclick="swLayer('indigenous','satellite')">Satellite</button><button class="layer-btn" onclick="swLayer('indigenous','topo')">Topographic</button><button class="layer-btn" onclick="swLayer('indigenous','street')">Street</button></div></div><div class="static-map-img-wrap"><img id="smi-indigenous-satellite" src="map-images/map-indigenous-satellite.jpg" alt="Area Context — Salt Rock & Guyandotte River — Satellite" class="static-map-img visible" loading="lazy"/><img id="smi-indigenous-topo" src="map-images/map-indigenous-topo.jpg" alt="Area Context — Salt Rock & Guyandotte River — Topographic" class="static-map-img" loading="lazy"/><img id="smi-indigenous-street" src="map-images/map-indigenous-street.jpg" alt="Area Context — Salt Rock & Guyandotte River — Street" class="static-map-img" loading="lazy"/></div><div class="static-map-caption">Property (upper center) · Salt Rock Petroglyphs ~8mi south along the Guyandotte River</div></div>
   </div>
 
   <blockquote>"Fort Ancient Indians occupied villages along the banks of the Guyandotte River between Salt Rock and West Hamlin... The main village was situated where the river makes an elbow bend with burial grounds nearby."<br>— Fort Ancient Indians at Salt Rock, WV: A Personal Account</blockquote>
@@ -859,7 +891,7 @@
       <strong>Regional Context — Huntington Metro Area</strong>
       <span>Street layer · showing I-64, Barboursville, Ona, and your property</span>
     </div>
-    <div id="map-regional" class="leaflet-map" style="height:380px;"></div>
+    <div class="static-map-wrap" id="smw-regional"><div class="static-map-header"><strong>Regional Context — Huntington Metro Area</strong><div class="static-map-layers"><button class="layer-btn active" onclick="swLayer('regional','street')">Street</button><button class="layer-btn" onclick="swLayer('regional','satellite')">Satellite</button><button class="layer-btn" onclick="swLayer('regional','hybrid')">Hybrid</button></div></div><div class="static-map-img-wrap"><img id="smi-regional-street" src="map-images/map-regional-street.jpg" alt="Regional Context — Huntington Metro Area — Street" class="static-map-img visible" loading="lazy"/><img id="smi-regional-satellite" src="map-images/map-regional-satellite.jpg" alt="Regional Context — Huntington Metro Area — Satellite" class="static-map-img" loading="lazy"/><img id="smi-regional-hybrid" src="map-images/map-regional-hybrid.jpg" alt="Regional Context — Huntington Metro Area — Hybrid" class="static-map-img" loading="lazy"/></div><div class="static-map-caption">I-64 corridor · Barboursville · Ona · surrounding Cabell County hill communities</div></div>
   </div>
 
   <h3>Your Property in Context</h3>
@@ -977,7 +1009,7 @@
       <strong>Wildcat Road — Parcel View</strong>
       <span>~400m radius · all base layers available</span>
     </div>
-    <div id="map-closeup" class="leaflet-map" style="height:480px;"></div>
+    <div class="static-map-wrap" id="smw-closeup"><div class="static-map-header"><strong>Wildcat Road — Parcel View</strong><div class="static-map-layers"><button class="layer-btn active" onclick="swLayer('closeup','satellite')">Satellite</button><button class="layer-btn" onclick="swLayer('closeup','topo')">Topographic</button><button class="layer-btn" onclick="swLayer('closeup','lidar')">LiDAR Terrain</button></div></div><div class="static-map-img-wrap"><img id="smi-closeup-satellite" src="map-images/map-closeup-satellite.jpg" alt="Wildcat Road — Parcel View — Satellite" class="static-map-img visible" loading="lazy"/><img id="smi-closeup-topo" src="map-images/map-closeup-topo.jpg" alt="Wildcat Road — Parcel View — Topographic" class="static-map-img" loading="lazy"/><img id="smi-closeup-lidar" src="map-images/map-closeup-lidar.jpg" alt="Wildcat Road — Parcel View — LiDAR Terrain" class="static-map-img" loading="lazy"/></div><div class="static-map-caption">Close-up · ~400m radius · LiDAR shows bare-earth terrain without tree cover</div></div>
   </div>
 
   <!-- Wide area map -->
@@ -987,7 +1019,7 @@
       <strong>Cabell County — Regional Setting</strong>
       <span>Ohio River to the north · Guyandotte drainage to the south</span>
     </div>
-    <div id="map-wide" class="leaflet-map" style="height:420px;"></div>
+    <div class="static-map-wrap" id="smw-wide"><div class="static-map-header"><strong>Cabell County — Regional Setting</strong><div class="static-map-layers"><button class="layer-btn active" onclick="swLayer('wide','hybrid')">Hybrid</button><button class="layer-btn" onclick="swLayer('wide','satellite')">Satellite</button><button class="layer-btn" onclick="swLayer('wide','topo')">Topographic</button></div></div><div class="static-map-img-wrap"><img id="smi-wide-hybrid" src="map-images/map-wide-hybrid.jpg" alt="Cabell County — Regional Setting — Hybrid" class="static-map-img visible" loading="lazy"/><img id="smi-wide-satellite" src="map-images/map-wide-satellite.jpg" alt="Cabell County — Regional Setting — Satellite" class="static-map-img" loading="lazy"/><img id="smi-wide-topo" src="map-images/map-wide-topo.jpg" alt="Cabell County — Regional Setting — Topographic" class="static-map-img" loading="lazy"/></div><div class="static-map-caption">Ohio River to the north · Guyandotte drainage to the south · Huntington metro area</div></div>
   </div>
 
   <h3>Data Sources for Further Research</h3>
@@ -1208,193 +1240,7 @@
   </span>
 </footer>
 
-<!-- ══════════════ LEAFLET MAP INIT ══════════════ -->
-<script>
-(function() {
-  var isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth < 768;
 
-  const LAT = 38.45042654229263;
-  const LNG = -82.27287249248235;
-
-  // ── Tile layer factories ──
-  function mkOSM() {
-    return L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    });
-  }
-  function mkSat() {
-    return L.tileLayer(
-      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-      { maxZoom: 19, attribution: 'Imagery © Esri, Maxar, Earthstar Geographics' }
-    );
-  }
-  function mkTopo() {
-    return L.tileLayer(
-      'https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}',
-      { maxZoom: 16, attribution: 'USGS National Map' }
-    );
-  }
-  function mkHybrid() {
-    return L.tileLayer(
-      'https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryTopo/MapServer/tile/{z}/{y}/{x}',
-      { maxZoom: 16, attribution: 'USGS National Map Imagery + Topo' }
-    );
-  }
-  function mkLiDAR() {
-    return L.tileLayer(
-      'https://server.arcgisonline.com/ArcGIS/rest/services/Elevation/World_Hillshade/MapServer/tile/{z}/{y}/{x}',
-      { maxZoom: 16, attribution: 'ESRI World Hillshade · USGS 3DEP source data' }
-    );
-  }
-  function mkLayers() {
-    return {
-      'Street (OSM)':   mkOSM(),
-      'Satellite':      mkSat(),
-      'Topographic':    mkTopo(),
-      'Hybrid':         mkHybrid(),
-      'LiDAR Terrain':  mkLiDAR()
-    };
-  }
-
-  // ── Gesture hint ──
-  function addGestureHint(mapEl) {
-    const hint = document.createElement('div');
-    hint.style.cssText = [
-      'position:absolute','inset:0','z-index:1000',
-      'background:rgba(30,40,57,.55)','display:flex',
-      'align-items:center','justify-content:center',
-      'pointer-events:none','opacity:0',
-      'transition:opacity .25s','border-radius:inherit',
-      'font-family:sans-serif','font-size:14px',
-      'color:#fff','letter-spacing:.5px','text-align:center'
-    ].join(';');
-    hint.innerHTML = '<span style="background:rgba(0,0,0,.5);padding:10px 18px;border-radius:6px;">Use <kbd style="background:#fff;color:#333;padding:2px 6px;border-radius:3px;font-size:12px;">Ctrl</kbd> + scroll to zoom</span>';
-    mapEl.style.position = 'relative';
-    mapEl.appendChild(hint);
-    return hint;
-  }
-
-  // ── Property marker ──
-  function propertyMarker() {
-    return L.circleMarker([LAT, LNG], {
-      radius: 10, color: '#2e4057', fillColor: '#3b82f6',
-      fillOpacity: 0.9, weight: 3
-    }).bindPopup(
-      '<strong>Wildcat Road Property</strong><br>' +
-      'Cabell County, WV<br>' +
-      '<small>' + LAT.toFixed(6) + '°N, ' + Math.abs(LNG).toFixed(6) + '°W</small>'
-    );
-  }
-
-  function saltRockMarker() {
-    return L.circleMarker([38.3451, -82.2396], {
-      radius: 9, color: '#7c3c1a', fillColor: '#f97316',
-      fillOpacity: 0.85, weight: 3
-    }).bindPopup(
-      '<strong>Salt Rock Petroglyphs</strong><br>' +
-      'Fort Ancient / Algonquian, ~1600 CE<br>' +
-      '<small>Guyandotte River, Cabell County</small>'
-    );
-  }
-
-  // ── Core map initializer ──
-  function initMap(id, defaultKey, lat, lng, zoom) {
-    const layers = mkLayers();
-    const map = L.map(id, {
-      layers: [layers[defaultKey]],
-      scrollWheelZoom: false
-    }).setView([lat, lng], zoom);
-    L.control.layers(layers).addTo(map);
-
-    // Ctrl+scroll gesture
-    const container = map.getContainer();
-    const hint = addGestureHint(container);
-    let hintTimer;
-    container.addEventListener('wheel', function(e) {
-      if (e.ctrlKey) { map.scrollWheelZoom.enable(); }
-      else {
-        map.scrollWheelZoom.disable();
-        hint.style.opacity = '1';
-        clearTimeout(hintTimer);
-        hintTimer = setTimeout(function() { hint.style.opacity = '0'; }, 1200);
-      }
-    }, { passive: true });
-    container.addEventListener('mouseleave', function() {
-      map.scrollWheelZoom.disable();
-    });
-    return map;
-  }
-
-  // ── Tap-to-load wrapper for mobile ──
-  // On desktop: init immediately. On mobile: show placeholder, init on tap.
-  function setupMap(id, defaultKey, lat, lng, zoom, setupFn) {
-    var el = document.getElementById(id);
-    if (!el) return null;
-
-    if (!isMobile) {
-      // Desktop: init now
-      var map = initMap(id, defaultKey, lat, lng, zoom);
-      if (setupFn) setupFn(map);
-      setTimeout(function() { map.invalidateSize(); }, 400);
-      return map;
-    }
-
-    // Mobile: show placeholder
-    var height = el.style.height || '380px';
-    el.style.height = height;
-    el.classList.add('map-placeholder');
-    el.innerHTML =
-      '<div class="map-placeholder-icon">🗺</div>' +
-      '<div class="map-placeholder-text">Tap to load interactive map</div>' +
-      '<div class="map-placeholder-sub">Pinch to zoom · drag to pan</div>';
-
-    el.addEventListener('click', function onTap() {
-      el.removeEventListener('click', onTap);
-      el.classList.remove('map-placeholder');
-      el.innerHTML = '';
-      el.style.height = height;
-      var map = initMap(id, defaultKey, lat, lng, zoom);
-      if (setupFn) setupFn(map);
-      setTimeout(function() { map.invalidateSize(); }, 200);
-    }, { once: true });
-
-    return null;
-  }
-
-  // ── Hero Map ──
-  setupMap('hero-map', 'Satellite', LAT, LNG, 15, function(map) {
-    propertyMarker().addTo(map);
-  });
-
-  // ── Terrain map ──
-  setupMap('map-terrain', 'Topographic', LAT, LNG, 13, function(map) {
-    propertyMarker().addTo(map);
-  });
-
-  // ── Indigenous sites map ──
-  setupMap('map-indigenous', 'Satellite', 38.397, -82.256, 11, function(map) {
-    propertyMarker().addTo(map);
-    saltRockMarker().addTo(map);
-  });
-
-  // ── Regional context map ──
-  setupMap('map-regional', 'Street (OSM)', 38.43, -82.30, 11, function(map) {
-    propertyMarker().addTo(map);
-  });
-
-  // ── Close-up parcel map ──
-  setupMap('map-closeup', 'Satellite', LAT, LNG, 17, function(map) {
-    propertyMarker().addTo(map);
-  });
-
-  // ── Wide county map ──
-  setupMap('map-wide', 'Hybrid', 38.42, -82.27, 10, function(map) {
-    propertyMarker().addTo(map);
-  });
-
-})();
-</script>
 
 
 <!-- ══════════════ SCROLL SPY ══════════════ -->
@@ -1544,5 +1390,27 @@
 
 
 
+
+<!-- ══════════════ MAP LAYER SWITCHER ══════════════ -->
+<script>
+function swLayer(slot, layer) {
+  var wrap = document.getElementById('smw-' + slot);
+  if (!wrap) return;
+  wrap.querySelectorAll('.static-map-img').forEach(function(img) {
+    img.classList.remove('visible');
+  });
+  var target = document.getElementById('smi-' + slot + '-' + layer);
+  if (target) target.classList.add('visible');
+  wrap.querySelectorAll('.layer-btn').forEach(function(btn) {
+    var isActive =
+      (layer === 'satellite' && btn.textContent === 'Satellite') ||
+      (layer === 'topo'      && btn.textContent === 'Topographic') ||
+      (layer === 'street'    && btn.textContent === 'Street') ||
+      (layer === 'hybrid'    && btn.textContent === 'Hybrid') ||
+      (layer === 'lidar'     && btn.textContent === 'LiDAR Terrain');
+    btn.classList.toggle('active', isActive);
+  });
+}
+</script>
 </body>
 </html>
