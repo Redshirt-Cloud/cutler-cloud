@@ -28,7 +28,6 @@
     color: var(--ink);
     line-height: 1.75;
     font-size: 17px;
-    overflow-x: hidden;
   }
 
   /* ── Cover ── */
@@ -68,7 +67,6 @@
   #hero-map {
     width: 100%; height: 480px;
     border-top: 4px solid var(--gold);
-    touch-action: pan-y;
   }
   .map-caption {
     background: #162032; color: rgba(255,255,255,.65);
@@ -103,7 +101,7 @@
 
   /* ── Layout ── */
   .page { max-width: 860px; margin: 0 auto; padding: 56px 32px; }
-  .section { margin-bottom: 72px; overflow-x: hidden; }
+  .section { margin-bottom: 72px; }
   h2 {
     font-size: 28px; color: var(--accent); margin-bottom: 6px;
     padding-bottom: 10px; border-bottom: 2px solid var(--gold);
@@ -375,6 +373,23 @@
     .page { padding: 40px 20px; }
     nav li a { padding: 12px 10px; font-size: 11px; }
     #hero-map { height: 320px; }
+  }
+
+  /* ── Tap to load maps (mobile) ── */
+  .map-placeholder {
+    position: relative; background: #1a2a3a;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    cursor: pointer; user-select: none;
+  }
+  .map-placeholder-icon { font-size: 32px; margin-bottom: 10px; pointer-events: none; }
+  .map-placeholder-text {
+    color: rgba(255,255,255,.7); font-family: sans-serif;
+    font-size: 14px; letter-spacing: .5px; pointer-events: none;
+  }
+  .map-placeholder-sub {
+    font-size: 11px; color: rgba(255,255,255,.35);
+    font-family: sans-serif; margin-top: 6px; pointer-events: none;
   }
 </style>
 </head>
@@ -1194,10 +1209,12 @@
 <!-- ══════════════ LEAFLET MAP INIT ══════════════ -->
 <script>
 (function() {
+  var isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth < 768;
+
   const LAT = 38.45042654229263;
   const LNG = -82.27287249248235;
 
-  // ── Tile layer factory — MUST create fresh instances per map ──
+  // ── Tile layer factories ──
   function mkOSM() {
     return L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
@@ -1222,19 +1239,11 @@
       { maxZoom: 16, attribution: 'USGS National Map Imagery + Topo' }
     );
   }
-
-  // ── Helper: build a fresh baseLayers object for each map ──
   function mkLiDAR() {
     return L.tileLayer(
       'https://server.arcgisonline.com/ArcGIS/rest/services/Elevation/World_Hillshade/MapServer/tile/{z}/{y}/{x}',
       { maxZoom: 16, attribution: 'ESRI World Hillshade · USGS 3DEP source data' }
     );
-  }
-  function mkNWI() {
-    return L.tileLayer.wms('https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands/MapServer/export', {
-      layers: '', format: 'image/png', transparent: true,
-      attribution: 'USFWS National Wetlands Inventory'
-    });
   }
   function mkLayers() {
     return {
@@ -1246,31 +1255,7 @@
     };
   }
 
-  // ── Property marker ──
-  function propertyMarker() {
-    return L.circleMarker([LAT, LNG], {
-      radius: 10, color: '#2e4057', fillColor: '#3b82f6',
-      fillOpacity: 0.9, weight: 3
-    }).bindPopup(
-      '<strong>Wildcat Road Property</strong><br>' +
-      'Cabell County, WV<br>' +
-      '<small>' + LAT.toFixed(6) + '°N, ' + Math.abs(LNG).toFixed(6) + '°W</small>'
-    );
-  }
-
-  // ── Salt Rock marker ──
-  function saltRockMarker() {
-    return L.circleMarker([38.3451, -82.2396], {
-      radius: 9, color: '#7c3c1a', fillColor: '#f97316',
-      fillOpacity: 0.85, weight: 3
-    }).bindPopup(
-      '<strong>Salt Rock Petroglyphs</strong><br>' +
-      'Fort Ancient / Algonquian, ~1600 CE<br>' +
-      '<small>Guyandotte River, Cabell County</small>'
-    );
-  }
-
-  // ── Gesture hint overlay ──
+  // ── Gesture hint ──
   function addGestureHint(mapEl) {
     const hint = document.createElement('div');
     hint.style.cssText = [
@@ -1288,29 +1273,45 @@
     return hint;
   }
 
-  // ── Helper: init a map with a given default layer key ──
+  // ── Property marker ──
+  function propertyMarker() {
+    return L.circleMarker([LAT, LNG], {
+      radius: 10, color: '#2e4057', fillColor: '#3b82f6',
+      fillOpacity: 0.9, weight: 3
+    }).bindPopup(
+      '<strong>Wildcat Road Property</strong><br>' +
+      'Cabell County, WV<br>' +
+      '<small>' + LAT.toFixed(6) + '°N, ' + Math.abs(LNG).toFixed(6) + '°W</small>'
+    );
+  }
+
+  function saltRockMarker() {
+    return L.circleMarker([38.3451, -82.2396], {
+      radius: 9, color: '#7c3c1a', fillColor: '#f97316',
+      fillOpacity: 0.85, weight: 3
+    }).bindPopup(
+      '<strong>Salt Rock Petroglyphs</strong><br>' +
+      'Fort Ancient / Algonquian, ~1600 CE<br>' +
+      '<small>Guyandotte River, Cabell County</small>'
+    );
+  }
+
+  // ── Core map initializer ──
   function initMap(id, defaultKey, lat, lng, zoom) {
     const layers = mkLayers();
-    const defaultLayer = layers[defaultKey];
     const map = L.map(id, {
-      layers: [defaultLayer],
-      scrollWheelZoom: false,
-      keyboard: false,
-      tap: false,
-      touchZoom: false,
-      dragging: !L.Browser.mobile,
-      zoomAnimation: false
+      layers: [layers[defaultKey]],
+      scrollWheelZoom: false
     }).setView([lat, lng], zoom);
     L.control.layers(layers).addTo(map);
 
-    // Ctrl+scroll to zoom
+    // Ctrl+scroll gesture
     const container = map.getContainer();
     const hint = addGestureHint(container);
     let hintTimer;
     container.addEventListener('wheel', function(e) {
-      if (e.ctrlKey) {
-        map.scrollWheelZoom.enable();
-      } else {
+      if (e.ctrlKey) { map.scrollWheelZoom.enable(); }
+      else {
         map.scrollWheelZoom.disable();
         hint.style.opacity = '1';
         clearTimeout(hintTimer);
@@ -1320,81 +1321,75 @@
     container.addEventListener('mouseleave', function() {
       map.scrollWheelZoom.disable();
     });
-
     return map;
   }
 
-  // ─────────────────────────────────────────
-  // Hero Map — satellite z15
-  // ─────────────────────────────────────────
-  // Prevent maps from stealing page scroll position on mobile
-  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-  const heroMap = initMap('hero-map', 'Satellite', LAT, LNG, 15);
-  heroMap.dragging.disable(); // Disable drag on hero — prevents mobile scroll trap
-  propertyMarker().addTo(heroMap);
+  // ── Tap-to-load wrapper for mobile ──
+  // On desktop: init immediately. On mobile: show placeholder, init on tap.
+  function setupMap(id, defaultKey, lat, lng, zoom, setupFn) {
+    var el = document.getElementById(id);
+    if (!el) return null;
 
-  // ─────────────────────────────────────────
-  // Terrain map — topo z13
-  // ─────────────────────────────────────────
-  const terrainMap = initMap('map-terrain', 'Topographic', LAT, LNG, 13);
-  propertyMarker().addTo(terrainMap);
+    if (!isMobile) {
+      // Desktop: init now
+      var map = initMap(id, defaultKey, lat, lng, zoom);
+      if (setupFn) setupFn(map);
+      setTimeout(function() { map.invalidateSize(); }, 400);
+      return map;
+    }
 
-  // ─────────────────────────────────────────
-  // Indigenous sites map — satellite z11, wider view
-  // ─────────────────────────────────────────
-  const indMap = initMap('map-indigenous', 'Satellite', 38.397, -82.256, 11);
-  propertyMarker().addTo(indMap);
-  saltRockMarker().addTo(indMap);
+    // Mobile: show placeholder
+    var height = el.style.height || '380px';
+    el.style.height = height;
+    el.classList.add('map-placeholder');
+    el.innerHTML =
+      '<div class="map-placeholder-icon">🗺</div>' +
+      '<div class="map-placeholder-text">Tap to load interactive map</div>' +
+      '<div class="map-placeholder-sub">Pinch to zoom · drag to pan</div>';
 
-  // ─────────────────────────────────────────
-  // Regional context map — street z11
-  // ─────────────────────────────────────────
-  const regMap = initMap('map-regional', 'Street (OSM)', 38.43, -82.30, 11);
-  propertyMarker().addTo(regMap);
+    el.addEventListener('click', function onTap() {
+      el.removeEventListener('click', onTap);
+      el.classList.remove('map-placeholder');
+      el.innerHTML = '';
+      el.style.height = height;
+      var map = initMap(id, defaultKey, lat, lng, zoom);
+      if (setupFn) setupFn(map);
+      setTimeout(function() { map.invalidateSize(); }, 200);
+    }, { once: true });
 
-  // ─────────────────────────────────────────
-  // Close-up parcel map — satellite z17
-  // ─────────────────────────────────────────
-  const closeMap = initMap('map-closeup', 'Satellite', LAT, LNG, 17);
-  propertyMarker().addTo(closeMap);
-
-  // ─────────────────────────────────────────
-  // Wide county map — hybrid z10
-  // ─────────────────────────────────────────
-  const wideMap = initMap('map-wide', 'Hybrid', 38.42, -82.27, 10);
-  propertyMarker().addTo(wideMap);
-
-  // Scroll to top immediately — before any map can steal focus
-  window.scrollTo(0, 0);
-  document.documentElement.scrollTop = 0;
-  document.body.scrollTop = 0;
-
-  // Lazy invalidate: only fix tile rendering when map scrolls into view
-  // Never on page load, which causes the scroll jump
-  var mapEntries = [
-    { map: heroMap,    el: document.getElementById('hero-map') },
-    { map: terrainMap, el: document.getElementById('map-terrain') },
-    { map: indMap,     el: document.getElementById('map-indigenous') },
-    { map: regMap,     el: document.getElementById('map-regional') },
-    { map: closeMap,   el: document.getElementById('map-closeup') },
-    { map: wideMap,    el: document.getElementById('map-wide') }
-  ];
-
-  if ('IntersectionObserver' in window) {
-    var obs = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          var found = mapEntries.find(function(m) { return m.el === entry.target; });
-          if (found) {
-            setTimeout(function() { found.map.invalidateSize(); }, 100);
-            obs.unobserve(entry.target);
-          }
-        }
-      });
-    }, { threshold: 0.1 });
-
-    mapEntries.forEach(function(m) { if (m.el) obs.observe(m.el); });
+    return null;
   }
+
+  // ── Hero Map ──
+  setupMap('hero-map', 'Satellite', LAT, LNG, 15, function(map) {
+    propertyMarker().addTo(map);
+  });
+
+  // ── Terrain map ──
+  setupMap('map-terrain', 'Topographic', LAT, LNG, 13, function(map) {
+    propertyMarker().addTo(map);
+  });
+
+  // ── Indigenous sites map ──
+  setupMap('map-indigenous', 'Satellite', 38.397, -82.256, 11, function(map) {
+    propertyMarker().addTo(map);
+    saltRockMarker().addTo(map);
+  });
+
+  // ── Regional context map ──
+  setupMap('map-regional', 'Street (OSM)', 38.43, -82.30, 11, function(map) {
+    propertyMarker().addTo(map);
+  });
+
+  // ── Close-up parcel map ──
+  setupMap('map-closeup', 'Satellite', LAT, LNG, 17, function(map) {
+    propertyMarker().addTo(map);
+  });
+
+  // ── Wide county map ──
+  setupMap('map-wide', 'Hybrid', 38.42, -82.27, 10, function(map) {
+    propertyMarker().addTo(map);
+  });
 
 })();
 </script>
